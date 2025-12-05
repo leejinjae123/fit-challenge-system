@@ -1,7 +1,8 @@
 FROM maven:3.8-openjdk-17 AS build
 WORKDIR /app
 COPY . .
-# 테스트 컴파일 아예 건너뛰기 (속도 향상 및 오류 방지)
+# Maven 메모리 제한 설정 (OOM 방지)
+ENV MAVEN_OPTS="-Xmx1024m"
 RUN mvn clean package -Dmaven.test.skip=true
 
 FROM eclipse-temurin:17-jdk-alpine
