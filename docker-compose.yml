@@ -35,7 +35,7 @@ services:
     image: mysql:8.0
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: leejinjae!kho13241003567
       MYSQL_DATABASE: fit_challenge_db
       MYSQL_USER: user
       MYSQL_PASSWORD: kho13241003567
