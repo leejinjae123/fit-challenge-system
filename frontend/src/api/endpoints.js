@@ -1,0 +1,22 @@
+// API 엔드포인트 관리
+export const ENDPOINTS = {
+  AUTH: {
+    LOGIN: '/auth/login',
+    SIGNUP: '/auth/signup',
+    REFRESH: '/auth/refresh',
+  },
+  USER: {
+    PROFILE: '/users/profile',
+    ONBOARDING: '/users/onboarding', // 온보딩 정보 저장
+    STATS: '/users/stats',
+  },
+  CHALLENGE: {
+    LIST: '/challenges',
+    DETAIL: (id) => `/challenges/${id}`,
+    JOIN: (id) => `/challenges/${id}/join`,
+  },
+  AI: {
+    ANALYZE: '/ai/analyze',
+  }
+};
+

@@ -1,0 +1,69 @@
+/* Layout Component Styles */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 전체 뷰포트 높이 고정 */
+  height: 100dvh; /* 모바일 브라우저 동적 높이 대응 */
+  background-color: var(--bg-color);
+}
+
+.layout-header {
+  padding: 0 20px;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
+  flex-shrink: 0; /* 헤더 크기 고정 */
+}
+
+.layout-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--primary-color);
+}
+
+.layout-main {
+  flex: 1; /* 남은 공간 모두 차지 */
+  padding: 20px;
+  overflow-y: auto; /* 내부 스크롤 활성화 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.layout-nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0 calc(8px + var(--safe-area-bottom)) 0;
+  background-color: var(--card-bg);
+  border-top: 1px solid #E5E7EB;
+  height: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+  flex-shrink: 0; /* 네비게이션바 크기 고정 */
+}
+
+.layout-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 500;
+  text-decoration: none;
+  width: 60px;
+  transition: color 0.2s;
+  color: var(--text-secondary);
+}
+
+.layout-nav-item.active {
+  color: var(--primary-color);
+}
+
+.layout-nav-icon {
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+

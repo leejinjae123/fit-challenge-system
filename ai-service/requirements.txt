@@ -1,0 +1,7 @@
+flask==3.0.0
+kafka-python==2.0.2
+redis==5.0.1
+numpy==1.26.2
+# opencv-python-headless==4.8.1.78 # Add for image processing
+# mediapipe==0.10.8 # Add for pose estimation
+
