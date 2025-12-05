@@ -12,19 +12,19 @@ AI 기반의 실시간 운동 자세 교정 및 사용자 간 챌린지 시스�
 
 ```mermaid
 graph TD
-    Client[Web Client (React)] --> Gateway[API Gateway]
+    Client["Web Client (React)"] --> Gateway["API Gateway"]
     
     subgraph "Backend Services"
-        Gateway --> Auth[Auth Service]
-        Gateway --> Challenge[Challenge Service]
-        Gateway --> AI[AI Service]
+        Gateway --> Auth["Auth Service"]
+        Gateway --> Challenge["Challenge Service"]
+        Gateway --> AI["AI Service"]
     end
     
     subgraph "Data & Messaging"
-        Auth --> MySQL[(MySQL)]
+        Auth --> MySQL[("MySQL")]
         Challenge --> MySQL
-        Challenge --> Redis[(Redis)]
-        Challenge --> Kafka{Kafka}
+        Challenge --> Redis[("Redis")]
+        Challenge --> Kafka{"Kafka"}
         AI --> Kafka
         AI --> Redis
     end
@@ -138,4 +138,3 @@ fit-challenge-system/
 - **MySQL**: 3306
 - **Redis**: 6379
 - **Kafka**: 9092 (Broker), 9999 (JMX), 2181 (Zookeeper)
-
