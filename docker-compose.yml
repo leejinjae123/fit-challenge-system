@@ -143,8 +143,8 @@ services:
     networks:
       - fit-network
 
-volumes:
-  # mysql-data: # 호스트 볼륨 사용으로 주석 처리 또는 삭제
+# volumes:
+#   mysql-data:
 
 networks:
   fit-network:
