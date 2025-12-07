@@ -8,6 +8,7 @@ export const ENDPOINTS = {
   USER: {
     PROFILE: '/users/profile',
     ONBOARDING: '/users/onboarding', // 온보딩 정보 저장
+    ONBOARDING_STATUS: '/users/me/onboarding-status', // 온보딩 완료 여부 확인
     STATS: '/users/stats',
   },
   CHALLENGE: {
@@ -19,4 +20,3 @@ export const ENDPOINTS = {
     ANALYZE: '/ai/analyze',
   }
 };
-

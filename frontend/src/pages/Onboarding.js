@@ -12,7 +12,10 @@ const Onboarding = () => {
     weight: '',
     height: '',
     oneRM: '',
-    goalCount: 3
+    goalCount: 3,
+    email: '',
+    password: '',
+    nickname: ''
   });
 
   const handleChange = (e) => {
@@ -21,14 +24,16 @@ const Onboarding = () => {
   };
 
   const handleNext = async () => {
-    if (step < 4) {
+    if (step < 5) {
       setStep(step + 1);
     } else {
       // 마지막 단계: 서버 전송
       setIsLoading(true);
       try {
         await OnboardingService.submitUserInfo(userInfo);
-        // 성공 시 홈으로 이동
+        // 성공 시 로컬 스토리지 플래그 저장 후 홈으로 이동
+        localStorage.setItem('isOnboarded', 'true');
+        alert('환영합니다! 회원가입이 완료되었습니다.');
         navigate('/'); 
       } catch (error) {
         console.error('Failed to submit onboarding data:', error);
@@ -116,6 +121,40 @@ const Onboarding = () => {
             </div>
           </StepContent>
         );
+      case 5:
+        return (
+          <StepContent 
+            title="계정 정보 입력" 
+            description="로그인에 사용할 정보를 입력해주세요."
+          >
+            <div className="form-group" style={{ width: '100%', maxWidth: '300px' }}>
+              <input 
+                type="email" 
+                name="email"
+                className="text-input"
+                value={userInfo.email} 
+                onChange={handleChange} 
+                placeholder="이메일 (예: user@example.com)" 
+              />
+              <input 
+                type="password" 
+                name="password"
+                className="text-input"
+                value={userInfo.password} 
+                onChange={handleChange} 
+                placeholder="비밀번호 (8자리 이상)" 
+              />
+              <input 
+                type="text" 
+                name="nickname"
+                className="text-input"
+                value={userInfo.nickname} 
+                onChange={handleChange} 
+                placeholder="닉네임" 
+              />
+            </div>
+          </StepContent>
+        );
       default:
         return null;
     }
@@ -124,14 +163,14 @@ const Onboarding = () => {
   return (
     <div className="onboarding-container">
       <div className="progress-bar">
-        <div className="progress-fill" style={{ width: `${(step / 4) * 100}%` }}></div>
+        <div className="progress-fill" style={{ width: `${(step / 5) * 100}%` }}></div>
       </div>
       
       {renderStep()}
 
       <div className="bottom-action">
-        <Button onClick={handleNext}>
-          {step === 4 ? '시작하기' : '다음'}
+        <Button onClick={handleNext} disabled={isLoading}>
+          {step === 5 ? (isLoading ? '처리중...' : '가입하기') : '다음'}
         </Button>
       </div>
     </div>
@@ -149,4 +188,3 @@ const StepContent = ({ title, description, children }) => (
 );
 
 export default Onboarding;
-

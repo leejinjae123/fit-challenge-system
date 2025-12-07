@@ -11,23 +11,37 @@ class OnboardingService {
     try {
       // Presentation Layer(UI)의 데이터를 API 스펙에 맞게 변환 (Adapter 역할)
       const payload = {
+        email: userInfo.email,
+        password: userInfo.password,
+        nickname: userInfo.nickname,
         weight: parseFloat(userInfo.weight),
         height: parseFloat(userInfo.height),
         // oneRM 값이 비어있으면 0으로 처리
-        one_rm: userInfo.oneRM ? parseInt(userInfo.oneRM, 10) : 0,
-        weekly_goal: userInfo.goalCount
+        squatOneRm: userInfo.oneRM ? parseInt(userInfo.oneRM, 10) : 0, // DTO 필드명에 맞춤
+        weeklyGoal: userInfo.goalCount // DTO 필드명에 맞춤
       };
       
       // API 호출
       const response = await apiClient.post(ENDPOINTS.USER.ONBOARDING, payload);
       return response;
     } catch (error) {
-      // 에러를 다시 던져서 UI 컴포넌트가 알림 등을 처리할 수 있게 함
       throw error;
+    }
+  }
+
+  /**
+   * 서버에서 사용자의 온보딩 완료 여부를 확인합니다.
+   * @returns {Promise<boolean>} - 완료되었으면 true
+   */
+  async checkOnboardingStatus() {
+    try {
+      const response = await apiClient.get(ENDPOINTS.USER.ONBOARDING_STATUS);
+      return response; // true or false
+    } catch (error) {
+      console.error('Failed to check onboarding status:', error);
+      return false; // 에러 시 미완료로 간주 (안전하게)
     }
   }
 }
 
-// 싱글톤 인스턴스로 내보냄
 export default new OnboardingService();
-
