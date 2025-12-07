@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // 환경 변수에서 API 기본 URL을 가져오거나 기본값 사용
-const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api/v1';
+const baseURL = process.env.REACT_APP_API_URL || 'http://192.168.219.108:8080/api/v1';
 
 const apiClient = axios.create({
   baseURL,

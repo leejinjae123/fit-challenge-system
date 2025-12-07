@@ -6,17 +6,36 @@ spring:
     name: gateway-service
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 
+              - "http://localhost:3000"
+              - "http://127.0.0.1:3000"
+              # 필요한 경우 서버 IP 추가 (예: http://192.168.219.108:3000)
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
       routes:
         - id: auth-service
           uri: http://auth-service:8081
           predicates:
-            - Path=/auth/**
+            - Path=/api/v1/users/**, /api/v1/auth/**
+          filters:
+            # Gateway 뒤의 서비스가 /api/v1/users/... 경로를 그대로 받을 수 있도록
+            # RewritePath가 필요할 수도 있지만, Controller가 @RequestMapping("/api/v1/users")를 쓰므로 그대로 둠
+            - RemoveRequestHeader=Cookie
         - id: challenge-service
           uri: http://challenge-service:8082
           predicates:
-            - Path=/challenges/**
+            - Path=/api/v1/challenges/**
         - id: ai-service
           uri: http://ai-service:5000
           predicates:
-            - Path=/ai/**
-
+            - Path=/api/v1/ai/**
