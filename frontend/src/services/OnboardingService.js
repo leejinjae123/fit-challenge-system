@@ -44,4 +44,5 @@ class OnboardingService {
   }
 }
 
-export default new OnboardingService();
+const onboardingServiceInstance = new OnboardingService();
+export default onboardingServiceInstance;

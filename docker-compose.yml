@@ -84,9 +84,13 @@ services:
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=kho13241003567
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
     depends_on:
       mysql:
         condition: service_healthy
+      redis:
+        condition: service_started
       kafka:
         condition: service_started
     networks:

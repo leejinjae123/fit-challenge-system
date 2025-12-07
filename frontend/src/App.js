@@ -6,7 +6,6 @@ import Stats from './pages/Stats';
 import MyPage from './pages/MyPage';
 import Onboarding from './pages/Onboarding';
 import Login from './pages/Login';
-import OnboardingService from './services/OnboardingService';
 
 // 인증 및 온보딩 체크 컴포넌트
 const AppGuard = ({ children }) => {

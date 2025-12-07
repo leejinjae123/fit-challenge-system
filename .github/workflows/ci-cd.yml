@@ -16,6 +16,33 @@ jobs:
       matrix:
         service: [gateway-service, auth-service, challenge-service]
     
+    # Service Containers for Integration Tests
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: fit_challenge_db
+          MYSQL_USER: user
+          MYSQL_PASSWORD: kho13241003567
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
     - uses: actions/checkout@v3
     
@@ -29,7 +56,7 @@ jobs:
     - name: Build and Test ${{ matrix.service }}
       run: |
         cd backend/${{ matrix.service }}
-        mvn clean package -DskipTests # Skipping tests for speed in demo, remove -DskipTests in production
+        mvn clean package # Tests will run now
 
   # -----------------------------------------------------------
   # 2. Frontend Build & Test (React)

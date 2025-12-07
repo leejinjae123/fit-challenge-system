@@ -63,8 +63,30 @@ const Onboarding = () => {
               />
               <span className="unit">kg</span>
             </div>
+            
+            {/* 로그인 링크 추가 */}
+            <div style={{ marginTop: '40px' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                이미 계정이 있으신가요?
+                <button 
+                  onClick={() => navigate('/login')}
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    color: 'var(--primary-color)', 
+                    fontWeight: '600', 
+                    cursor: 'pointer',
+                    marginLeft: '8px',
+                    fontSize: '14px'
+                  }}
+                >
+                  로그인하기
+                </button>
+              </p>
+            </div>
           </StepContent>
         );
+      // ... 나머지 단계는 그대로 ...
       case 2:
         return (
           <StepContent 
@@ -181,7 +203,7 @@ const StepContent = ({ title, description, children }) => (
   <div className="step-content">
     <h2 className="step-title">{title}</h2>
     <p className="step-desc">{description}</p>
-    <div className="step-body">
+    <div className="step-body" style={{ flexDirection: 'column', alignItems: 'center' }}>
       {children}
     </div>
   </div>
