@@ -5,7 +5,6 @@ import com.fit.auth.domain.UserMetrics;
 import com.fit.auth.dto.LoginRequestDto;
 import com.fit.auth.dto.OnboardingRequestDto;
 import com.fit.auth.dto.UserResponseDto;
-import com.fit.auth.repository.UserMetricsRepository;
 import com.fit.auth.repository.UserRepository;
 import com.fit.auth.support.RedisLockFacade;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final UserMetricsRepository userMetricsRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisLockFacade redisLockFacade;
     private final TransactionTemplate transactionTemplate;
