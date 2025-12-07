@@ -2,7 +2,9 @@ package com.fit.auth.service;
 
 import com.fit.auth.domain.User;
 import com.fit.auth.domain.UserMetrics;
+import com.fit.auth.dto.LoginRequestDto;
 import com.fit.auth.dto.OnboardingRequestDto;
+import com.fit.auth.dto.UserResponseDto;
 import com.fit.auth.repository.UserMetricsRepository;
 import com.fit.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +22,16 @@ public class AuthService {
 
     @Transactional
     public void processOnboarding(OnboardingRequestDto dto) {
-        // 1. 이메일 중복 체크
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
 
-        // 2. User 생성 (비밀번호 암호화)
         User user = new User();
         user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword())); // 암호화 저장
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setNickname(dto.getNickname());
         user.setIsOnboarded(true);
 
-        // 3. UserMetrics 생성
         UserMetrics metrics = new UserMetrics();
         metrics.setUser(user);
         metrics.setHeight(dto.getHeight());
@@ -40,9 +39,30 @@ public class AuthService {
         metrics.setSquatOneRm(dto.getSquatOneRm());
         metrics.setWeeklyGoal(dto.getWeeklyGoal());
 
-        // 4. 저장 (CascadeType.ALL 덕분에 User 저장 시 Metrics도 같이 저장됨)
-        // 양방향 연관관계 편의 메서드나 수동 설정 필요할 수 있음
         user.setUserMetrics(metrics);
         userRepository.save(user);
+    }
+
+    // 로그인 로직
+    @Transactional(readOnly = true)
+    public UserResponseDto login(LoginRequestDto dto) {
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // TODO: JWT 토큰 발급 로직 추가 필요
+        // 지금은 유저 정보만 반환
+        return UserResponseDto.from(user);
+    }
+
+    // 내 정보 조회
+    @Transactional(readOnly = true)
+    public UserResponseDto getMyInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        return UserResponseDto.from(user);
     }
 }

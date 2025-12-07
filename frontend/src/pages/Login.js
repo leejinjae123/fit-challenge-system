@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Common';
+import AuthService from '../services/AuthService';
 import '../styles/login.css';
-// import AuthService from '../services/AuthService'; // 나중에 구현
 
 const Login = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,12 +15,15 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
-    // TODO: 실제 로그인 API 연동
-    console.log('Login attempt:', credentials);
-    // 임시: 로그인 성공 처리
-    localStorage.setItem('accessToken', 'dummy-token');
-    localStorage.setItem('isOnboarded', 'true'); // 이미 가입된 유저라고 가정
-    navigate('/');
+    setError('');
+    try {
+      await AuthService.login(credentials.email, credentials.password);
+      alert('로그인 성공!');
+      navigate('/');
+    } catch (err) {
+      console.error('Login failed', err);
+      setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+    }
   };
 
   return (
@@ -46,6 +50,8 @@ const Login = () => {
           value={credentials.password}
           onChange={handleChange}
         />
+        {error && <p style={{ color: 'red', fontSize: '14px' }}>{error}</p>}
+        
         <Button onClick={handleLogin} style={{ marginTop: '20px' }}>
           로그인
         </Button>
@@ -62,4 +68,3 @@ const Login = () => {
 };
 
 export default Login;
-
