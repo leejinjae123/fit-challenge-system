@@ -155,6 +155,19 @@ services:
     networks:
       - fit-network
 
+  # -----------------------------
+  # Watchtower (Auto Updater)
+  # -----------------------------
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 --cleanup
+    restart: always
+    networks:
+      - fit-network
+
 # volumes:
 #   mysql-data:
 
