@@ -6,7 +6,20 @@ spring:
     name: gateway-service
   cloud:
     gateway:
-      # globalcors 설정 제거: Nginx Proxy 사용으로 Same-Origin 정책 적용됨
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: 
+              - "*" # Nginx를 통한 접근 허용 (외부 접속은 Nginx 포트(3000)로만 가능하므로 안전)
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
       routes:
         - id: auth-service
           uri: http://auth-service:8081
