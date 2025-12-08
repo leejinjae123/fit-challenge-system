@@ -9,10 +9,8 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 
-              - "http://localhost:3000"
-              - "http://127.0.0.1:3000"
-              # 필요한 경우 서버 IP 추가 (예: http://192.168.219.108:3000)
+            allowedOriginPatterns: 
+              - "*" # 모든 출처 허용 (개발 및 테스트 편의성)
             allowedMethods:
               - GET
               - POST

@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-// 환경 변수에서 API 기본 URL을 가져오거나 기본값 사용
-const baseURL = process.env.REACT_APP_API_URL || 'http://192.168.219.108:8080/api/v1';
+// API 기본 URL 설정
+// 개발 환경(npm start): package.json의 proxy 설정에 의해 http://localhost:8080/api/v1으로 연결됨
+// 배포 환경(Docker/Nginx): Nginx의 reverse proxy 설정에 의해 /api/v1으로 연결됨 (상대 경로 사용)
+const baseURL = process.env.REACT_APP_API_URL || '/api/v1';
 
 const apiClient = axios.create({
   baseURL,
@@ -53,4 +55,3 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
-
