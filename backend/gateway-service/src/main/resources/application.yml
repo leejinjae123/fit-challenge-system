@@ -6,28 +6,13 @@ spring:
     name: gateway-service
   cloud:
     gateway:
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOriginPatterns: 
-              - "*" # 모든 출처 허용 (개발 및 테스트 편의성)
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-            allowedHeaders:
-              - "*"
-            allowCredentials: true
+      # globalcors 설정 제거: Nginx Proxy 사용으로 Same-Origin 정책 적용됨
       routes:
         - id: auth-service
           uri: http://auth-service:8081
           predicates:
             - Path=/api/v1/users/**, /api/v1/auth/**
           filters:
-            # Gateway 뒤의 서비스가 /api/v1/users/... 경로를 그대로 받을 수 있도록
-            # RewritePath가 필요할 수도 있지만, Controller가 @RequestMapping("/api/v1/users")를 쓰므로 그대로 둠
             - RemoveRequestHeader=Cookie
         - id: challenge-service
           uri: http://challenge-service:8082

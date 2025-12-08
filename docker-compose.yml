@@ -5,17 +5,16 @@ services:
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
-    ports:
-      - "2181:2181"
+    # ports: - "2181:2181" # 외부 접속 불필요
     networks:
       - fit-network
 
   kafka:
     image: wurstmeister/kafka
     container_name: kafka
-    ports:
-      - "9092:9092"
-      - "9999:9999"
+    # ports:
+    #   - "9092:9092" # 외부 접속 불필요
+    #   - "9999:9999"
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -38,7 +37,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: kho13241003567
     ports:
-      - "3306:3306"
+      - "3306:3306" # DBeaver 접속용 (비밀번호 강력하게 관리 필요)
     volumes:
       - ./mysql-data:/var/lib/mysql
     networks:
@@ -53,8 +52,7 @@ services:
   redis:
     image: redis:alpine
     container_name: redis
-    ports:
-      - "6379:6379"
+    # ports: - "6379:6379" # 외부 접속 불필요
     networks:
       - fit-network
 
@@ -64,11 +62,10 @@ services:
   gateway-service:
     build: ./backend/gateway-service
     container_name: gateway-service
-    ports:
-      - "8080:8080"
+    # ports: - "8080:8080" # 보안 강화: 외부 포트 제거! (Nginx를 통해서만 접근 가능)
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - EUREKA_CLIENT_ENABLED=false # Using manual routing or direct for simplicity first
+      - EUREKA_CLIENT_ENABLED=false
     depends_on:
       - mysql
       - kafka
@@ -122,8 +119,7 @@ services:
   ai-service:
     build: ./ai-service
     container_name: ai-service
-    ports:
-      - "5000:5000"
+    # ports: - "5000:5000" # 보안 강화: 외부 포트 제거!
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - REDIS_HOST=redis
@@ -132,15 +128,7 @@ services:
       - redis
     networks:
       - fit-network
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
-    #     # Note: GPU support requires nvidia-docker installed. 
-    #     # If not available, comment out the deploy section or run on CPU.
+    # deploy: ... (GPU 설정)
 
   # -----------------------------
   # Frontend
@@ -149,7 +137,7 @@ services:
     build: ./frontend
     container_name: frontend-app
     ports:
-      - "3000:80"
+      - "3000:80" # 유일한 외부 통로 (웹 서버)
     depends_on:
       - gateway-service
     networks:
@@ -168,10 +156,6 @@ services:
     networks:
       - fit-network
 
-# volumes:
-#   mysql-data:
-
 networks:
   fit-network:
     driver: bridge
-
