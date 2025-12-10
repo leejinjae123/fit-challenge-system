@@ -5,7 +5,8 @@ services:
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
-    # ports: - "2181:2181" # 외부 접속 불필요
+    ports:
+      - "2181:2181" # 외부 접속 허용 (선택)
     networks:
       - fit-network
 
@@ -13,14 +14,15 @@ services:
     image: wurstmeister/kafka
     container_name: kafka
     ports:
-      - "127.0.0.1:9092:9092" # 로컬 개발용 (localhost:9092)
+      - "9092:9092" # 로컬 개발용 외부 접속 허용
     environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      # 외부(로컬 IDE)에서는 192.168.219.108로 접속
+      # 내부(Docker)에서도 이 IP로 접속 가능해야 함
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.219.108
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "posture-data:1:1,challenge-events:1:1"
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=192.168.219.108 -Dcom.sun.management.jmxremote.rmi.port=9999"
+      JMX_PORT: 9999
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
@@ -37,7 +39,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: kho13241003567
     ports:
-      - "3306:3306" # 로컬 개발 및 DBeaver 접속용
+      - "3306:3306" # 로컬 개발용 외부 접속 허용
     volumes:
       - ./mysql-data:/var/lib/mysql
     networks:
@@ -53,7 +55,7 @@ services:
     image: redis:alpine
     container_name: redis
     ports:
-      - "127.0.0.1:6379:6379" # 로컬 개발용
+      - "6379:6379" # 로컬 개발용 외부 접속 허용
     networks:
       - fit-network
 
@@ -63,8 +65,6 @@ services:
   gateway-service:
     build: ./backend/gateway-service
     container_name: gateway-service
-    ports:
-      - "127.0.0.1:8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - EUREKA_CLIENT_ENABLED=false
@@ -85,7 +85,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/fit_challenge_db?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=kho13241003567
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092 # Docker 내부용 포트
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
     depends_on:
@@ -107,7 +107,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=kho13241003567
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092 # Docker 내부용 포트
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
       mysql:
         condition: service_healthy
@@ -118,12 +118,14 @@ services:
     networks:
       - fit-network
 
+  # -----------------------------
+  # AI Service
+  # -----------------------------
   ai-service:
     build: ./ai-service
     container_name: ai-service
-    # ports: - "5000:5000" # 보안 강화: 외부 포트 제거!
     environment:
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092 # Docker 내부용 포트
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - REDIS_HOST=redis
     depends_on:
       - kafka
@@ -139,7 +141,7 @@ services:
     build: ./frontend
     container_name: frontend-app
     ports:
-      - "3000:80" # 유일한 외부 통로 (웹 서버)
+      - "3000:80"
     depends_on:
       - gateway-service
     networks:
