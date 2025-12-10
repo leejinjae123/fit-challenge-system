@@ -38,6 +38,8 @@ services:
       MYSQL_DATABASE: fit_challenge_db
       MYSQL_USER: user
       MYSQL_PASSWORD: kho13241003567
+      MYSQL_ROOT_HOST: '%' # 모든 IP에서 접속 허용 (로컬 개발 시 중요)
+
     ports:
       - "3306:3306" # 로컬 개발용 외부 접속 허용
     volumes:
