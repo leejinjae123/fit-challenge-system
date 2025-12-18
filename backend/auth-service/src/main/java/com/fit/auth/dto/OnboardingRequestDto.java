@@ -15,6 +15,6 @@ public class OnboardingRequestDto {
     // 신체 정보
     private Double height;
     private Double weight;
-    private Integer squatOneRm;
+    private String levelCode;
     private Integer weeklyGoal;
 }

@@ -4,6 +4,7 @@ import com.fit.auth.dto.LoginRequestDto;
 import com.fit.auth.dto.OnboardingRequestDto;
 import com.fit.auth.dto.UserResponseDto;
 import com.fit.auth.service.AuthService;
+import com.fit.auth.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final PointService pointService;
 
     // 회원가입 (온보딩)
     @PostMapping("/users/onboarding")
@@ -21,7 +23,7 @@ public class AuthController {
         authService.processOnboarding(requestDto);
         return ResponseEntity.ok("회원가입 및 온보딩이 완료되었습니다.");
     }
-    
+
     // 로그인
     @PostMapping("/auth/login")
     public ResponseEntity<UserResponseDto> login(@RequestBody LoginRequestDto requestDto) {

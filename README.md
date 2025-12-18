@@ -4,7 +4,7 @@
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-AI 기반의 운동 루틴 기록 & 추천, 사용자 간 챌린지 시스템입니다. 마이크로서비스 아키텍처(MSA)를 기반으로 설계되었으며, 실시간 데이터 처리를 위해 Kafka를, 동시성 제어를 위해 Redis를 사용합니다.
+AI 기반의 운동 루틴 기록 & 추천 시스템입니다. 마이크로서비스 아키텍처(MSA)를 기반으로 설계되었으며, 실시간 데이터 처리를 위해 Kafka를, 동시성 제어를 위해 Redis를 사용합니다.
 
 ## 🏗 Architecture
 

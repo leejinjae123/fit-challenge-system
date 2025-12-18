@@ -16,7 +16,7 @@ public class UserResponseDto {
     // 신체 정보
     private Double height;
     private Double weight;
-    private Integer squatOneRm;
+    private String levelCode;
     private Integer weeklyGoal;
 
     public static UserResponseDto from(User user) {
@@ -29,7 +29,7 @@ public class UserResponseDto {
         if (user.getUserMetrics() != null) {
             dto.setHeight(user.getUserMetrics().getHeight());
             dto.setWeight(user.getUserMetrics().getWeight());
-            dto.setSquatOneRm(user.getUserMetrics().getSquatOneRm());
+            dto.setLevelCode(user.getUserMetrics().getLevelCode());
             dto.setWeeklyGoal(user.getUserMetrics().getWeeklyGoal());
         }
         return dto;

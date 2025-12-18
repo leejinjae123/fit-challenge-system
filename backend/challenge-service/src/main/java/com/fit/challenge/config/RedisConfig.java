@@ -1,4 +1,4 @@
-package com.fit.auth.config;
+package com.fit.challenge.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -32,3 +32,4 @@ public class RedisConfig {
         return Redisson.create(config);
     }
 }
+

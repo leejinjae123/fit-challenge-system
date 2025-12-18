@@ -18,10 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class AuthServiceConcurrencyTest {
+class PointServiceConcurrencyTest {
 
     @Autowired
-    private AuthService authService;
+    private PointService pointService;
 
     @Autowired
     private UserRepository userRepository;
@@ -58,7 +58,7 @@ class AuthServiceConcurrencyTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                 try {
-                    authService.chargePoints(userId, 1L);
+                    pointService.chargePoints(userId, 1L);
                 } catch (Exception e) {
                     System.err.println("Error: " + e.getMessage());
                 } finally {

@@ -21,6 +21,13 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // [임시] Gateway가 없을 때를 대비해 X-User-Id도 직접 주입
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      config.headers['X-User-Id'] = userId;
+    }
+    
     return config;
   },
   (error) => Promise.reject(error)

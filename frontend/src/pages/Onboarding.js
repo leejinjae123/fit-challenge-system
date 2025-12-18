@@ -8,10 +8,13 @@ const Onboarding = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showHelper, setShowHelper] = useState(false);
+  const [helperOneRm, setHelperOneRm] = useState('');
+
   const [userInfo, setUserInfo] = useState({
     weight: '',
     height: '',
-    oneRM: '',
+    levelCode: 'L10', // 초기값: 초급 (L10)
     goalCount: 3,
     email: '',
     password: '',
@@ -42,6 +45,18 @@ const Onboarding = () => {
         setIsLoading(false);
       }
     }
+  };
+
+  const calculateLevel = (oneRm) => {
+    const weight = Number(oneRm);
+    if (!oneRm || weight < 60) {
+      setUserInfo(prev => ({ ...prev, levelCode: 'L10' }));
+    } else if (weight >= 60 && weight <= 120) {
+      setUserInfo(prev => ({ ...prev, levelCode: 'L20' }));
+    } else {
+      setUserInfo(prev => ({ ...prev, levelCode: 'L30' }));
+    }
+    setShowHelper(false);
   };
 
   const renderStep = () => {
@@ -109,18 +124,77 @@ const Onboarding = () => {
       case 3:
         return (
           <StepContent 
-            title="현재 스쿼트 1RM은?" 
-            description="모르시면 0으로 입력해주세요."
+            title="운동 난이도를 선택해주세요" 
+            description="본인의 운동 수행 능력에 맞춰 선택해주세요."
           >
-             <div className="input-group">
-              <input 
-                type="number" 
-                name="oneRM"
-                value={userInfo.oneRM} 
-                onChange={handleChange} 
-                placeholder="0" 
-              />
-              <span className="unit">kg</span>
+            <div className="selection-group">
+              {[
+                { code: 'L10', label: '초급', desc: '운동을 처음 시작해요' },
+                { code: 'L20', label: '중급', desc: '기본적인 동작은 할 수 있어요' },
+                { code: 'L30', label: '고급', desc: '전문적인 훈련이 필요해요' }
+              ].map(level => (
+                <button 
+                  key={level.code}
+                   className={`select-btn ${userInfo.levelCode === level.code ? 'selected' : ''}`}
+                   onClick={() => setUserInfo(prev => ({ ...prev, levelCode: level.code }))}
+                   style={{ height: 'auto', padding: '15px', flexDirection: 'column', gap: '5px'}}
+                 >
+                   <span style={{ fontSize: '18px', fontWeight: 'bold' }}>{level.label}</span>
+                   <span style={{ fontSize: '13px', opacity: 0.8 }}>{level.desc}</span>
+                 </button>
+               ))}
+            </div>
+
+            <div style={{ marginTop: '20px', textAlign: 'center' }}>
+              <button 
+                onClick={() => setShowHelper(!showHelper)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-secondary)',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                본인의 실력이 어느정도인지 모르겠을때?
+              </button>
+
+              {showHelper && (
+                <div style={{ 
+                  marginTop: '15px', 
+                  padding: '15px', 
+                  background: 'var(--card-bg)', 
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                }}>
+                  <p style={{ fontSize: '14px', marginBottom: '10px' }}>
+                    스쿼트 1RM(최대 중량)을 입력해보세요.<br/>
+                    적절한 난이도를 추천해드립니다.
+                  </p>
+                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                    <input
+                      type="number"
+                      value={helperOneRm}
+                      onChange={(e) => setHelperOneRm(e.target.value)}
+                      placeholder="0"
+                      style={{
+                        padding: '8px',
+                        borderRadius: '8px',
+                        border: '1px solid var(--border-color)',
+                        width: '80px',
+                        textAlign: 'center'
+                      }}
+                    />
+                    <Button 
+                      onClick={() => calculateLevel(helperOneRm)}
+                      style={{ width: 'auto', padding: '0 15px', height: '40px', fontSize: '14px' }}
+                    >
+                      확인
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </StepContent>
         );

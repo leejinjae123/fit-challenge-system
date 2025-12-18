@@ -21,8 +21,24 @@ const MyPage = () => {
   }, []);
 
   const handleLogout = () => {
+    // 모든 로컬 저장소 데이터 초기화
     localStorage.clear();
-    navigate('/login');
+    sessionStorage.clear();
+    
+    // 상태 초기화
+    setUserInfo(null);
+
+    // 페이지를 새로고침하며 로그인 페이지로 이동 (메모리상 상태 완전 초기화)
+    window.location.replace('/login');
+  };
+
+  const getLevelLabel = (code) => {
+    switch(code) {
+      case 'L10': return '초급';
+      case 'L20': return '중급';
+      case 'L30': return '고급';
+      default: return '미설정';
+    }
   };
 
   if (!userInfo) return <div>Loading...</div>;
@@ -41,7 +57,7 @@ const MyPage = () => {
         <div style={styles.metricsGrid}>
           <MetricItem label="키" value={`${userInfo.height} cm`} />
           <MetricItem label="몸무게" value={`${userInfo.weight} kg`} />
-          <MetricItem label="스쿼트 1RM" value={`${userInfo.squatOneRm} kg`} />
+          <MetricItem label="운동 레벨" value={getLevelLabel(userInfo.levelCode)} />
           <MetricItem label="주간 목표" value={`${userInfo.weeklyGoal} 회`} />
         </div>
       </Card>

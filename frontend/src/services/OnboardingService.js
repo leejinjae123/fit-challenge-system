@@ -16,8 +16,7 @@ class OnboardingService {
         nickname: userInfo.nickname,
         weight: parseFloat(userInfo.weight),
         height: parseFloat(userInfo.height),
-        // oneRM 값이 비어있으면 0으로 처리
-        squatOneRm: userInfo.oneRM ? parseInt(userInfo.oneRM, 10) : 0, // DTO 필드명에 맞춤
+        levelCode: userInfo.levelCode, // DTO 필드명에 맞춤
         weeklyGoal: userInfo.goalCount // DTO 필드명에 맞춤
       };
       

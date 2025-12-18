@@ -17,7 +17,7 @@ public class UserMetrics {
 
     private Double height;      // 키 (cm)
     private Double weight;      // 몸무게 (kg)
-    private Integer squatOneRm; // 스쿼트 1RM (kg)
+    private String levelCode;   // 운동 난이도 (L01:초급, L02:중급, L03:고급)
     private Integer weeklyGoal; // 주간 목표 횟수
 
     @OneToOne(fetch = FetchType.LAZY)

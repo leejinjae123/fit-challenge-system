@@ -16,6 +16,11 @@ export const ENDPOINTS = {
     DETAIL: (id) => `/challenges/${id}`,
     JOIN: (id) => `/challenges/${id}/join`,
   },
+  WORKOUT: {
+    RECORDS: '/workout-records',
+    MY_RECORDS: '/workout-records/my',
+    RECOMMENDATION: '/exercises/recommendation', // 추천 루틴
+  },
   AI: {
     ANALYZE: '/ai/analyze',
   }

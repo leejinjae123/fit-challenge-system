@@ -18,7 +18,7 @@ import static org.mockito.BDDMockito.given;
 class AuthServiceTest {
 
     @InjectMocks
-    private AuthService authService;
+    private AuthServiceImpl authService;
 
     @Mock
     private UserRepository userRepository;
@@ -43,5 +43,3 @@ class AuthServiceTest {
         assertThat(user.getNickname()).isEqualTo(newNickname);
     }
 }
-
-
