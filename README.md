@@ -120,21 +120,11 @@ fit-challenge-system/
   - `/challenges/**` -> `challenge-service`
   - `/ai/**` -> `ai-service`
 
-### 2. Auth Service (Port 8081)
+### 2. Auth Service
 - 사용자 회원가입, 로그인
 - JWT 토큰 발급 및 검증 (예정)
 
-### 3. Challenge Service (Port 8082)
+### 3. Challenge Service
 - 챌린지 생성 및 참여
 - Redis를 활용한 참가자 수 동시성 제어
 - Kafka 이벤트를 수신하여 실시간 점수 업데이트
-
-### 4. AI Service (Port 5000)
-- Python & Flask 기반
-- Kafka Consumer로 동작하며 이미지/비디오 프레임을 분석
-- 분석 결과(자세 정확도 등)를 Kafka Topic으로 전송
-
-### 5. Infrastructure Ports
-- **MySQL**: 3306
-- **Redis**: 6379
-- **Kafka**: 9092 (Broker), 9999 (JMX), 2181 (Zookeeper)
