@@ -84,7 +84,8 @@ services:
     build: ./backend/auth-service
     container_name: auth-service
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/fit_challenge_db?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/fit_challenge_db?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=kho13241003567
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
@@ -104,7 +105,8 @@ services:
     build: ./backend/challenge-service
     container_name: challenge-service
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/fit_challenge_db?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/fit_challenge_db?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=kho13241003567
       - SPRING_REDIS_HOST=redis

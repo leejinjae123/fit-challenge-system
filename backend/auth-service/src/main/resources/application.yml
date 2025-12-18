@@ -16,4 +16,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect # 기본 Dialect 추가
     show-sql: true
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: auth-group
+      auto-offset-reset: earliest
 
