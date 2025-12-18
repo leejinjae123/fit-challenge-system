@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button } from '../components/Common';
 import AuthService from '../services/AuthService';
-import { useNavigate } from 'react-router-dom';
 
 const MyPage = () => {
-  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {

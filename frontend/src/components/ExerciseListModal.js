@@ -34,7 +34,7 @@ const ExerciseListModal = ({ onClose, onAddPlans, userId, isRecommendation = fal
   }, [loading, hasMore]);
 
   // 데이터 로드 함수 (검색어 및 필터 포함)
-  const loadExercises = async (pageNumber, currentSearch, currentFilters) => {
+  const loadExercises = useCallback(async (pageNumber, currentSearch, currentFilters) => {
     try {
       setLoading(true);
       
@@ -80,11 +80,11 @@ const ExerciseListModal = ({ onClose, onAddPlans, userId, isRecommendation = fal
     } finally {
       setLoading(false);
     }
-  };
+  }, [isRecommendation, planValues]);
 
   useEffect(() => {
     loadExercises(page, search, filters);
-  }, [page]);
+  }, [page, search, filters, loadExercises]);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;

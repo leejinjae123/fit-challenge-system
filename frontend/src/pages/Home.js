@@ -6,12 +6,10 @@ import ExerciseListModal from '../components/ExerciseListModal';
 
 const Home = () => {
   const [plannedWorkouts, setPlannedWorkouts] = useState([]);
-  const [recommendations, setRecommendations] = useState([]);
   const [completedRecords, setCompletedWorkouts] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAllExercisesModal, setShowAllExercisesModal] = useState(false);
-
   const [showRecommendationModal, setShowRecommendationModal] = useState(false);
 
   // 데이터 로딩
@@ -25,9 +23,6 @@ const Home = () => {
       const planned = allRecords.filter(r => r.status === 'PLANNED');
       setPlannedWorkouts(planned);
       setCompletedWorkouts(allRecords.filter(r => r.status === 'COMPLETED'));
-
-      // 홈페이지 메인에는 추천을 더 이상 직접 뿌리지 않음 (요청사항)
-      setRecommendations([]); 
     } catch (error) {
       console.error('Data loading failed:', error);
     } finally {
@@ -39,30 +34,6 @@ const Home = () => {
     loadData();
   }, []);
 
-  // 추천 운동을 내 계획에 추가
-  const handleAddRecommendation = async (exercise) => {
-    try {
-      const plan = {
-        exerciseType: exercise.exerciseName,
-        sets: exercise.sets || 3,
-        reps: exercise.reps || 12,
-        count: (exercise.sets || 3) * (exercise.reps || 12),
-        status: 'PLANNED',
-        performedAt: new Date().toISOString()
-      };
-      await ChallengeService.createWorkoutRecord(plan, userInfo?.id);
-      setRecommendations(prev => prev.filter(ex => ex.id !== exercise.id));
-      loadData();
-    } catch (error) {
-      alert('추천 추가 실패');
-    }
-  };
-
-  // 추천 목록에서 삭제 (UI에서만 제거)
-  const handleRemoveRecommendation = (exerciseId) => {
-    setRecommendations(prev => prev.filter(ex => ex.id !== exerciseId));
-  };
-
   // 계획 일괄 추가 핸들러
   const handleAddPlans = async (plans) => {
     try {
@@ -71,6 +42,7 @@ const Home = () => {
       ));
       alert(`${plans.length}개의 운동 계획이 추가되었습니다!`);
       setShowAllExercisesModal(false);
+      setShowRecommendationModal(false);
       loadData();
     } catch (error) {
       alert('계획 추가 실패');
