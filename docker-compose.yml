@@ -155,10 +155,12 @@ services:
   # Watchtower (Auto Updater)
   # -----------------------------
   watchtower:
-    image: containrrr/watchtower
+    image: containrrr/watchtower:latest # latest를 사용하고 있는지 확인
     container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_API_VERSION=1.44 
     command: --interval 30 --cleanup
     restart: always
     networks:
