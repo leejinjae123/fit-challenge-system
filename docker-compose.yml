@@ -65,7 +65,7 @@ services:
   # Backend Microservices
   # -----------------------------
   gateway-service:
-    image: lee/fit-gateway:latest
+    image: leejj123/fit-gateway:latest
     container_name: gateway-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -81,7 +81,7 @@ services:
       - fit-network
 
   auth-service:
-    image: lee/fit-auth:latest
+    image: leejj123/fit-auth:latest
     container_name: auth-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -102,7 +102,7 @@ services:
       - fit-network
 
   challenge-service:
-    image: lee/fit-challenge:latest
+    image: leejj123/fit-challenge:latest
     container_name: challenge-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -126,7 +126,7 @@ services:
   # AI Service
   # -----------------------------
   ai-service:
-    image: lee/fit-ai:latest
+    image: leejj123/fit-ai:latest
     container_name: ai-service
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
@@ -142,7 +142,7 @@ services:
   # Frontend
   # -----------------------------
   frontend:
-    image: lee/fit-frontend:latest
+    image: leejj123/fit-frontend:latest
     container_name: frontend-app
     ports:
       - "3000:80"
