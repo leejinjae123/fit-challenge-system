@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Card } from './Common';
 
 const HistoryModal = ({ onClose, allRecords }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
