@@ -49,11 +49,33 @@ const Stats = () => {
 
   if (loading) return <div className="flex-center" style={{ height: '200px' }}>데이터 로딩 중...</div>;
 
+  const today = new Date().toISOString().split('T')[0];
+  const isRecordedToday = workouts.some(w => w.createdAt === today);
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div style={{ backgroundColor: 'white', padding: '10px', border: '1px solid #ccc', borderRadius: '8px' }}>
+          <p style={{ fontWeight: 'bold', margin: '0 0 5px 0' }}>{label}</p>
+          <p style={{ color: '#4F46E5', margin: '0' }}>몸무게: {data.weight}kg</p>
+          <p style={{ color: '#10B981', margin: '0' }}>성공률: {Math.round(data.successRate)}%</p>
+          {data.memo && (
+            <p style={{ color: '#6B7280', margin: '5px 0 0 0', fontSize: '12px', maxWidth: '200px' }}>
+              메모: {data.memo}
+            </p>
+          )}
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div style={{ paddingBottom: '100px' }}>
       <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '20px' }}>운동 통계 및 기록</h2>
 
-      {/* 1. 몸무게 및 성공률 그래프 */}
+      {/* 1. 몸무게 그래프 (성공률/메모는 툴팁에 표시) */}
       <Card title="변화 추이" style={{ marginBottom: '20px' }}>
         {workouts.length === 0 ? (
           <p style={{ textAlign: 'center', padding: '40px 0', color: '#9CA3AF' }}>기록된 데이터가 없습니다.</p>
@@ -67,12 +89,10 @@ const Stats = () => {
                   tick={{ fontSize: 12 }} 
                   tickFormatter={(val) => val.substring(5)} // MM-DD만 표기
                 />
-                <YAxis yAxisId="left" orientation="left" stroke="#4F46E5" tick={{ fontSize: 12 }} domain={['dataMin - 5', 'dataMax + 5']} />
-                <YAxis yAxisId="right" orientation="right" stroke="#10B981" tick={{ fontSize: 12 }} domain={[0, 100]} />
-                <Tooltip />
+                <YAxis orientation="left" stroke="#4F46E5" tick={{ fontSize: 12 }} domain={['dataMin - 5', 'dataMax + 5']} />
+                <Tooltip content={<CustomTooltip />} />
                 <Legend wrapperStyle={{ paddingTop: '20px' }} />
                 <Line 
-                  yAxisId="left"
                   type="monotone" 
                   dataKey="weight" 
                   name="몸무게 (kg)" 
@@ -81,52 +101,51 @@ const Stats = () => {
                   dot={{ r: 4 }}
                   activeDot={{ r: 6 }} 
                 />
-                <Line 
-                  yAxisId="right"
-                  type="monotone" 
-                  dataKey="successRate" 
-                  name="성공률 (%)" 
-                  stroke="#10B981" 
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                />
               </LineChart>
             </ResponsiveContainer>
           </div>
         )}
       </Card>
 
-      {/* 2. 오늘 기록 등록 */}
-      <Card title="오늘의 기록 등록" style={{ marginBottom: '20px' }}>
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>오늘의 몸무게 (kg)</label>
-            <input 
-              type="number" 
-              step="0.1"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              placeholder="예: 75.5"
-              style={styles.input}
-            />
+      {/* 2. 오늘 기록 등록 (기록되지 않은 경우에만 표시) */}
+      {!isRecordedToday ? (
+        <Card title="오늘의 기록 등록" style={{ marginBottom: '20px' }}>
+          <form onSubmit={handleSubmit} style={styles.form}>
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>오늘의 몸무게 (kg)</label>
+              <input 
+                type="number" 
+                step="0.1"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                placeholder="예: 75.5"
+                style={styles.input}
+              />
+            </div>
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>운동 메모</label>
+              <textarea 
+                value={memo}
+                onChange={(e) => setMemo(e.target.value)}
+                placeholder="오늘 운동은 어땠나요?"
+                style={{ ...styles.input, height: '80px', resize: 'none' }}
+              />
+            </div>
+            <p style={styles.infoText}>
+              * 성공률은 오늘 '계획됨' 상태인 운동 중 '완료'된 비율로 자동 계산됩니다.
+            </p>
+            <Button type="submit" variant="primary" style={{ width: '100%' }}>
+              기록하기
+            </Button>
+          </form>
+        </Card>
+      ) : (
+        <Card style={{ marginBottom: '20px', backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }}>
+          <div style={{ textAlign: 'center', padding: '10px' }}>
+            <span style={{ color: '#166534', fontWeight: 'bold' }}>✅ 오늘의 기록이 완료되었습니다!</span>
           </div>
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>운동 메모</label>
-            <textarea 
-              value={memo}
-              onChange={(e) => setMemo(e.target.value)}
-              placeholder="오늘 운동은 어땠나요?"
-              style={{ ...styles.input, height: '80px', resize: 'none' }}
-            />
-          </div>
-          <p style={styles.infoText}>
-            * 성공률은 오늘 '계획됨' 상태인 운동 중 '완료'된 비율로 자동 계산됩니다.
-          </p>
-          <Button type="submit" variant="primary" style={{ width: '100%' }}>
-            기록하기
-          </Button>
-        </form>
-      </Card>
+        </Card>
+      )}
 
       {/* 3. 최근 메모 리스트 */}
       <Card title="최근 메모">
