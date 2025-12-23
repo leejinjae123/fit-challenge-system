@@ -31,7 +31,7 @@ spring:
         - id: challenge-service
           uri: ${CHALLENGE_SERVICE_URL:http://challenge-service:8082}
           predicates:
-            - Path=/api/v1/challenges/**, /api/v1/workout-records/**, /api/v1/exercises/**
+            - Path=/api/v1/challenges/**, /api/v1/workout-records/**, /api/v1/exercises/**, /api/v1/user-workouts/**
         - id: ai-service
           uri: ${AI_SERVICE_URL:http://ai-service:5000}
           predicates:

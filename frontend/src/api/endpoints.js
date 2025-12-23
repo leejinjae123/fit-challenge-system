@@ -20,6 +20,7 @@ export const ENDPOINTS = {
     RECORDS: '/workout-records',
     MY_RECORDS: '/workout-records/my',
     RECOMMENDATION: '/exercises/recommendation', // 추천 루틴
+    USER_WORKOUTS: '/user-workouts', // 일일 운동 기록 (몸무게 등)
   },
   AI: {
     ANALYZE: '/ai/analyze',

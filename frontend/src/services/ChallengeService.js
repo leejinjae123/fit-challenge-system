@@ -87,6 +87,36 @@ class ChallengeService {
       throw error;
     }
   }
+
+  // 일일 운동 기록 저장 (몸무게 등)
+  async saveUserWorkout(data, userId) {
+    try {
+      const config = {};
+      if (userId) {
+        config.headers = { 'X-User-Id': userId };
+      }
+      const response = await apiClient.post(ENDPOINTS.WORKOUT.USER_WORKOUTS, data, config);
+      return response;
+    } catch (error) {
+      console.error('Failed to save user workout:', error);
+      throw error;
+    }
+  }
+
+  // 유저 일일 기록 리스트 조회
+  async getUserWorkouts(userId) {
+    try {
+      const config = {};
+      if (userId) {
+        config.headers = { 'X-User-Id': userId };
+      }
+      const response = await apiClient.get(ENDPOINTS.WORKOUT.USER_WORKOUTS, config);
+      return response;
+    } catch (error) {
+      console.error('Failed to fetch user workouts:', error);
+      throw error;
+    }
+  }
 }
 
 const challengeServiceInstance = new ChallengeService();

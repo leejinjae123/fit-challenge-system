@@ -3,14 +3,17 @@ import { Button, Card } from '../components/Common';
 import ChallengeService from '../services/ChallengeService';
 import AuthService from '../services/AuthService';
 import ExerciseListModal from '../components/ExerciseListModal';
+import HistoryModal from '../components/HistoryModal';
 
 const Home = () => {
   const [plannedWorkouts, setPlannedWorkouts] = useState([]);
   const [completedRecords, setCompletedWorkouts] = useState([]);
+  const [allWorkoutRecords, setAllWorkoutRecords] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAllExercisesModal, setShowAllExercisesModal] = useState(false);
   const [showRecommendationModal, setShowRecommendationModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
 
   // 데이터 로딩
   const loadData = async () => {
@@ -20,9 +23,19 @@ const Home = () => {
       setUserInfo(user);
 
       const allRecords = await ChallengeService.getMyWorkoutRecords(user.id);
-      const planned = allRecords.filter(r => r.status === 'PLANNED');
+      
+      // 오늘 날짜 구하기 (YYYY-MM-DD 형식)
+      const now = new Date();
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      
+      // 오늘 계획만 필터링
+      const planned = allRecords.filter(r => 
+        r.status === 'PLANNED' && r.planDate === todayStr
+      );
+      
       setPlannedWorkouts(planned);
       setCompletedWorkouts(allRecords.filter(r => r.status === 'COMPLETED'));
+      setAllWorkoutRecords(allRecords); // 전체 기록 저장 (이전 계획 보기용)
     } catch (error) {
       console.error('Data loading failed:', error);
     } finally {
@@ -87,7 +100,24 @@ const Home = () => {
       </div>
 
       {/* 1. 오늘의 계획 목록 - 모달과 동일한 뷰 적용 */}
-      <Card title="오늘의 운동 계획" style={{ marginBottom: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold' }}>오늘의 운동 계획</h3>
+        <button 
+          onClick={() => setShowHistoryModal(true)}
+          style={{ 
+            backgroundColor: 'transparent', 
+            border: 'none', 
+            color: '#4F46E5', 
+            fontSize: '14px', 
+            fontWeight: '600',
+            cursor: 'pointer',
+          }}
+        >
+          이전 계획 보기
+        </button>
+      </div>
+
+      <Card style={{ marginBottom: '20px' }}>
         {plannedWorkouts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '30px 0' }}>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', fontSize: '15px' }}>
@@ -166,6 +196,15 @@ const Home = () => {
           userId={userInfo?.id}
           isRecommendation={true}
           initialLevel={userInfo?.levelCode || 'L10'}
+        />
+      )}
+
+      {/* 이전 계획 보기 모달 */}
+      {showHistoryModal && (
+        <HistoryModal 
+          onClose={() => setShowHistoryModal(false)}
+          allRecords={allWorkoutRecords}
+          userId={userInfo?.id}
         />
       )}
 
