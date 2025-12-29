@@ -28,6 +28,15 @@ class AuthService {
       throw error;
     }
   }
+
+  async updateMyInfo(updateData) {
+    try {
+      const response = await apiClient.put(ENDPOINTS.USER.PROFILE.replace('/profile', '/me'), updateData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 const authServiceInstance = new AuthService();

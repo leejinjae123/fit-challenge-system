@@ -4,17 +4,32 @@ import AuthService from '../services/AuthService';
 
 const MyPage = () => {
   const [userInfo, setUserInfo] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    nickname: '',
+    height: '',
+    weight: '',
+    levelCode: '',
+    weeklyGoal: ''
+  });
+
+  const fetchMyInfo = async () => {
+    try {
+      const data = await AuthService.getMyInfo();
+      setUserInfo(data);
+      setEditForm({
+        nickname: data.nickname,
+        height: data.height,
+        weight: data.weight,
+        levelCode: data.levelCode,
+        weeklyGoal: data.weeklyGoal
+      });
+    } catch (error) {
+      console.error('Failed to fetch user info:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchMyInfo = async () => {
-      try {
-        const data = await AuthService.getMyInfo();
-        setUserInfo(data);
-      } catch (error) {
-        console.error('Failed to fetch user info:', error);
-      }
-    };
-
     fetchMyInfo();
   }, []);
 
@@ -28,6 +43,40 @@ const MyPage = () => {
 
     // 페이지를 새로고침하며 로그인 페이지로 이동 (메모리상 상태 완전 초기화)
     window.location.replace('/login');
+  };
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+    if (!isEditing && userInfo) {
+      setEditForm({
+        nickname: userInfo.nickname,
+        height: userInfo.height,
+        weight: userInfo.weight,
+        levelCode: userInfo.levelCode,
+        weeklyGoal: userInfo.weeklyGoal
+      });
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await AuthService.updateMyInfo(editForm);
+      await fetchMyInfo();
+      setIsEditing(false);
+      alert('정보가 수정되었습니다.');
+    } catch (error) {
+      console.error('Failed to update info:', error);
+      alert('정보 수정에 실패했습니다.');
+    }
   };
 
   const getLevelLabel = (code) => {
@@ -44,21 +93,97 @@ const MyPage = () => {
   return (
     <div style={{ paddingBottom: '20px' }}>
       <Card title="내 프로필" style={{ marginBottom: '20px' }}>
-        <div style={styles.profileHeader}>
-          <div style={styles.avatar}>👤</div>
-          <h3 style={styles.nickname}>{userInfo.nickname}</h3>
-          <p style={styles.email}>{userInfo.email}</p>
-        </div>
+        {isEditing ? (
+          <form onSubmit={handleSubmit} style={styles.form}>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>닉네임</label>
+              <input
+                type="text"
+                name="nickname"
+                value={editForm.nickname}
+                onChange={handleChange}
+                style={styles.input}
+                required
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>키 (cm)</label>
+              <input
+                type="number"
+                name="height"
+                value={editForm.height}
+                onChange={handleChange}
+                style={styles.input}
+                required
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>몸무게 (kg)</label>
+              <input
+                type="number"
+                name="weight"
+                value={editForm.weight}
+                onChange={handleChange}
+                style={styles.input}
+                required
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>운동 레벨</label>
+              <select
+                name="levelCode"
+                value={editForm.levelCode}
+                onChange={handleChange}
+                style={styles.input}
+                required
+              >
+                <option value="L10">초급</option>
+                <option value="L20">중급</option>
+                <option value="L30">고급</option>
+              </select>
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>주간 목표 (회)</label>
+              <input
+                type="number"
+                name="weeklyGoal"
+                value={editForm.weeklyGoal}
+                onChange={handleChange}
+                style={styles.input}
+                required
+              />
+            </div>
+            <div style={styles.buttonGroup}>
+              <Button type="submit" variant="primary" style={{ flex: 1 }}>저장</Button>
+              <Button type="button" variant="secondary" onClick={handleEditToggle} style={{ flex: 1, marginLeft: '10px' }}>취소</Button>
+            </div>
+          </form>
+        ) : (
+          <>
+            <div style={styles.profileHeader}>
+              <div style={styles.avatar}>👤</div>
+              <h3 style={styles.nickname}>{userInfo.nickname}</h3>
+              <p style={styles.email}>{userInfo.email}</p>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: '10px' }}>
+              <Button variant="outline" onClick={handleEditToggle} style={{ padding: '4px 12px', fontSize: '14px' }}>
+                수정하기
+              </Button>
+            </div>
+          </>
+        )}
       </Card>
 
-      <Card title="신체 정보">
-        <div style={styles.metricsGrid}>
-          <MetricItem label="키" value={`${userInfo.height} cm`} />
-          <MetricItem label="몸무게" value={`${userInfo.weight} kg`} />
-          <MetricItem label="운동 레벨" value={getLevelLabel(userInfo.levelCode)} />
-          <MetricItem label="주간 목표" value={`${userInfo.weeklyGoal} 회`} />
-        </div>
-      </Card>
+      {!isEditing && (
+        <Card title="신체 정보">
+          <div style={styles.metricsGrid}>
+            <MetricItem label="키" value={`${userInfo.height} cm`} />
+            <MetricItem label="몸무게" value={`${userInfo.weight} kg`} />
+            <MetricItem label="운동 레벨" value={getLevelLabel(userInfo.levelCode)} />
+            <MetricItem label="주간 목표" value={`${userInfo.weeklyGoal} 회`} />
+          </div>
+        </Card>
+      )}
 
       <div style={{ marginTop: '20px' }}>
         <Button variant="secondary" onClick={handleLogout}>
@@ -127,6 +252,31 @@ const styles = {
     fontSize: '16px',
     fontWeight: '600',
     color: 'var(--primary-color)',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+  },
+  formGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  },
+  label: {
+    fontSize: '14px',
+    fontWeight: '600',
+    color: 'var(--text-secondary)',
+  },
+  input: {
+    padding: '10px',
+    borderRadius: '8px',
+    border: '1px solid #D1D5DB',
+    fontSize: '16px',
+  },
+  buttonGroup: {
+    display: 'flex',
+    marginTop: '10px',
   }
 };
 

@@ -24,22 +24,36 @@ class AuthServiceTest {
     private UserRepository userRepository;
 
     @Test
-    @DisplayName("닉네임 변경 성공 테스트")
-    void updateNickname_Success() {
+    @DisplayName("회원 정보 변경 성공 테스트")
+    void updateProfile_Success() {
         // given
         Long userId = 1L;
-        String newNickname = "HealthyFit";
+        com.fit.auth.dto.UserUpdateRequestDto dto = new com.fit.auth.dto.UserUpdateRequestDto();
+        dto.setNickname("HealthyFit");
+        dto.setHeight(175.0);
+        dto.setWeight(70.0);
+        dto.setLevelCode("L20");
+        dto.setWeeklyGoal(5);
+
         User user = new User();
         user.setId(userId);
         user.setNickname("OldNick");
+        
+        com.fit.auth.domain.UserMetrics metrics = new com.fit.auth.domain.UserMetrics();
+        metrics.setUser(user);
+        user.setUserMetrics(metrics);
 
         // Mocking: 레포지토리가 이렇게 동작한다고 가정
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         // when
-        authService.updateNickname(userId, newNickname);
+        authService.updateProfile(userId, dto);
 
         // then
-        assertThat(user.getNickname()).isEqualTo(newNickname);
+        assertThat(user.getNickname()).isEqualTo("HealthyFit");
+        assertThat(user.getUserMetrics().getHeight()).isEqualTo(175.0);
+        assertThat(user.getUserMetrics().getWeight()).isEqualTo(70.0);
+        assertThat(user.getUserMetrics().getLevelCode()).isEqualTo("L20");
+        assertThat(user.getUserMetrics().getWeeklyGoal()).isEqualTo(5);
     }
 }

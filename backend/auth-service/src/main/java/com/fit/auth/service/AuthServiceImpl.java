@@ -94,21 +94,31 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 닉네임 변경 구현 (TDD 예시)
+     * 내 정보 수정 구현
      */
     @Override
     @Transactional
-    public void updateNickname(Long userId, String newNickname) {
+    public void updateProfile(Long userId, com.fit.auth.dto.UserUpdateRequestDto dto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // 유효성 검증
-        if (newNickname == null || newNickname.trim().isEmpty()) {
-            throw new IllegalArgumentException("Nickname cannot be empty");
+        // 닉네임 수정
+        if (dto.getNickname() != null && !dto.getNickname().trim().isEmpty()) {
+            user.setNickname(dto.getNickname());
         }
 
-        // 변경 감지(Dirty Checking)를 통해 트랜잭션 종료 시 자동 UPDATE 쿼리 발생
-        user.setNickname(newNickname);
+        // 신체 정보 수정
+        UserMetrics metrics = user.getUserMetrics();
+        if (metrics == null) {
+            metrics = new UserMetrics();
+            metrics.setUser(user);
+            user.setUserMetrics(metrics);
+        }
+
+        if (dto.getHeight() != null) metrics.setHeight(dto.getHeight());
+        if (dto.getWeight() != null) metrics.setWeight(dto.getWeight());
+        if (dto.getLevelCode() != null) metrics.setLevelCode(dto.getLevelCode());
+        if (dto.getWeeklyGoal() != null) metrics.setWeeklyGoal(dto.getWeeklyGoal());
     }
 
 }

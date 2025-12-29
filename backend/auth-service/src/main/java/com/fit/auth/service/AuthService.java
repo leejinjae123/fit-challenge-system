@@ -42,13 +42,13 @@ public interface AuthService {
     UserResponseDto getMyInfo(Long userId);
 
     /**
-     * 닉네임 수정
+     * 내 정보 수정
      * <p>
-     * 사용자의 닉네임을 변경합니다.
+     * 사용자의 닉네임, 키, 몸무게, 운동 레벨, 주간 목표를 수정합니다.
      *
-     * @param userId      사용자 ID
-     * @param newNickname 변경할 새로운 닉네임
+     * @param userId 사용자 ID
+     * @param dto    수정할 정보 DTO
      */
-    void updateNickname(Long userId, String newNickname);
+    void updateProfile(Long userId, com.fit.auth.dto.UserUpdateRequestDto dto);
 
 }

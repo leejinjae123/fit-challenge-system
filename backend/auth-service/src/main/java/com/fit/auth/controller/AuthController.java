@@ -3,8 +3,8 @@ package com.fit.auth.controller;
 import com.fit.auth.dto.LoginRequestDto;
 import com.fit.auth.dto.OnboardingRequestDto;
 import com.fit.auth.dto.UserResponseDto;
+import com.fit.auth.dto.UserUpdateRequestDto;
 import com.fit.auth.service.AuthService;
-import com.fit.auth.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final PointService pointService;
 
     // 회원가입 (온보딩)
     @PostMapping("/users/onboarding")
@@ -39,6 +38,15 @@ public class AuthController {
         // Gateway에서 토큰 검증 후 userId를 헤더에 넣어준다고 가정
         UserResponseDto response = authService.getMyInfo(userId);
         return ResponseEntity.ok(response);
+    }
+
+    // 내 정보 수정
+    @PutMapping("/users/me")
+    public ResponseEntity<String> updateProfile(
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestBody UserUpdateRequestDto requestDto) {
+        authService.updateProfile(userId, requestDto);
+        return ResponseEntity.ok("회원 정보가 수정되었습니다.");
     }
 
     // 온보딩 상태 확인 (기존 유지)
