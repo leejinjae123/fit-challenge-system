@@ -34,6 +34,7 @@
 - **Redis (Redisson)**: 분산 락(Distributed Lock)을 통한 선착순 챌린지 참여 및 포인트 업데이트 동시성 제어
 
 ### **Infrastructure / DevOps**
+- **Self-Hosted Server**: 온프레미스 서버 환경 직접 구축 및 운영
 - **Docker & Docker Compose**: 컨테이너화 및 인프라 오케스트레이션
 - **GitHub Actions**: CI/CD 파이프라인 자동화
 - **Watchtower**: 도커 Hub 이미지 변경 감지 및 자동 배포
@@ -94,20 +95,18 @@ graph TD
 
 ---
 
-## 3. CI/CD 기능 설명
+## 3. 인프라 구축 및 CI/CD (Infrastructure)
 
-본 프로젝트는 **GitHub Actions**와 **Docker Hub**, **Watchtower**를 조합하여 완전 자동화된 CI/CD 환경을 구축했습니다.
+본 프로젝트는 외부 클라우드 서비스에 의존하지 않고, **직접 서버 인프라를 구축**하여 운영하고 있습니다.
 
-### **지속적 통합 (CI)**
-- `main` 브랜치에 코드가 Push되거나 PR이 생성되면 워크플로우가 실행됩니다.
-- **Backend**: Maven을 사용하여 각 서비스(Gateway, Auth, Challenge)를 빌드하고 JUnit 테스트를 수행합니다.
-- **Frontend**: Node.js 환경에서 의존성 설치 및 리액트 빌드 과정을 검증합니다.
-- **AI Service**: Python 의존성 및 코드 환경을 검증합니다.
+### **온프레미스 서버 구축**
+- **서버 환경**: 개인 서버에 Linux 환경을 구축하여 전 서비스를 Docker 기반으로 운영 중입니다.
+- **네트워크 설정**: `DuckDNS`와 `포트 포워딩`을 통해 외부 접속 환경을 구축하였으며, `Nginx`를 활용해 리버스 프록시 및 보안 설정을 완료했습니다.
 
-### **지속적 배포 (CD)**
-1. 모든 테스트와 빌드가 성공하면, Docker 이미지를 생성하여 **Docker Hub**에 `latest` 태그로 자동 Push합니다.
-2. 운영 서버의 **Watchtower** 컨테이너가 Docker Hub의 이미지 변경을 실시간(30초 간격)으로 감시합니다.
-3. 새로운 이미지가 감지되면, 실행 중인 컨테이너를 자동으로 중단시키고 최신 이미지로 재시작하여 다운타임을 최소화한 배포를 수행합니다.
+### **자동화 파이프라인 (CI/CD)**
+- **GitHub Actions**: `main` 브랜치에 코드가 Push되면 백엔드/프론트엔드/AI 서비스의 빌드 및 테스트를 자동으로 수행합니다.
+- **Docker Hub**: 빌드된 이미지는 Docker Hub에 자동으로 업로드됩니다.
+- **Watchtower**: 운영 서버에서 실행 중인 `Watchtower`가 새로운 이미지를 감지하여, 30초 내에 자동으로 컨테이너를 최신화함으로써 무중단에 가까운 배포 환경을 제공합니다.
 
 ---
 

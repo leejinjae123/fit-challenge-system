@@ -8,6 +8,9 @@
 
 2. 핵심 기술 역량 및 문제 해결 사례
 
+[Infrastructure] 온프레미스 서버 인프라 직접 구축 및 운영
+- 외부 클라우드 도움 없이 직접 리눅스 서버 환경을 구축하고, DuckDNS와 포트 포워딩을 통해 안정적인 외부 접속 환경을 마련했습니다. Nginx 리버스 프록시 설정을 통해 보안과 라우팅 효율성을 높였습니다.
+
 [Architecture] MSA 기반의 확장성 있는 시스템 설계
 - 서비스 간 결합도를 낮추기 위해 Microservices Architecture를 도입하고, Spring Cloud Gateway를 통해 통합 진입점을 구축했습니다. 이를 통해 서비스별 독립적인 배포 및 확장이 가능한 구조를 실현했습니다.
 
@@ -30,4 +33,4 @@
 - Backend: Java 17, Spring Boot 3.2, JPA, Spring Security, Spring Cloud Gateway
 - AI: Python 3.9, Flask (루틴 추천 엔진 개발 중)
 - Frontend: React.js, Nginx
-- Infra: Docker, Kafka, Redis, MySQL 8.0, GitHub Actions
+- Infra: Self-Hosted Linux Server, Docker, Kafka, Redis, MySQL 8.0, GitHub Actions
