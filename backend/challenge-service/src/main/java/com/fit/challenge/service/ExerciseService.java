@@ -11,11 +11,12 @@ import java.util.List;
 public interface ExerciseService {
 
     /**
-     * 사용자 레벨에 맞는 추천 운동 목록 조회
+     * 사용자 레벨 및 최근 운동 기록에 맞는 추천 운동 목록 조회
      * @param levelCode 사용자 레벨 코드 (L10, L20, L30)
+     * @param userId 사용자 ID (최근 운동 부위 제외를 위해 사용)
      * @return 추천 운동 DTO 리스트
      */
-    List<ExerciseDto> getRecommendedExercises(String levelCode);
+    List<ExerciseDto> getRecommendedExercises(String levelCode, Long userId);
 
     /**
      * 전체 운동 목록 조회 (페이징, 검색 및 필터링 지원)

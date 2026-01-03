@@ -63,11 +63,15 @@ class ChallengeService {
   }
 
   // 추천 루틴 조회
-  async getRecommendations(levelCode) {
+  async getRecommendations(levelCode, userId) {
     try {
-      const response = await apiClient.get(ENDPOINTS.WORKOUT.RECOMMENDATION, {
+      const config = {
         params: { levelCode }
-      });
+      };
+      if (userId) {
+        config.headers = { 'X-User-Id': userId };
+      }
+      const response = await apiClient.get(ENDPOINTS.WORKOUT.RECOMMENDATION, config);
       return response;
     } catch (error) {
       console.error('Failed to fetch recommendations:', error);

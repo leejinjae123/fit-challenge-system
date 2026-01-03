@@ -1,8 +1,11 @@
 package com.fit.challenge.service;
 
 import com.fit.challenge.domain.Exercise;
+import com.fit.challenge.domain.RecordStatus;
+import com.fit.challenge.domain.WorkoutRecord;
 import com.fit.challenge.dto.ExerciseDto;
 import com.fit.challenge.repository.ExerciseRepository;
+import com.fit.challenge.repository.WorkoutRecordRepository;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,16 +24,52 @@ import java.util.stream.Collectors;
 public class ExerciseServiceImpl implements ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
+    private final WorkoutRecordRepository workoutRecordRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public List<ExerciseDto> getRecommendedExercises(String levelCode) {
-        List<Exercise> exercises;
+    public List<ExerciseDto> getRecommendedExercises(String levelCode, Long userId) {
+        // 1. 최근 3일간의 완료된 운동 기록 조회
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        List<WorkoutRecord> recentRecords = workoutRecordRepository.findByUserIdAndStatusAndPerformedAtAfter(
+                userId, RecordStatus.COMPLETED, threeDaysAgo);
 
-        if (levelCode != null && !levelCode.isEmpty()) {
-            exercises = exerciseRepository.findByLevelCodeIdOrderByRecommendationScoreDesc(levelCode);
+        // 2. 최근 한 운동들의 명칭 리스트 추출
+        List<String> recentExerciseNames = recentRecords.stream()
+                .map(WorkoutRecord::getExerciseType)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 3. 최근 한 운동들의 자극 부위(targetCode) 조회
+        List<String> excludedTargetCodes = new ArrayList<>();
+        if (!recentExerciseNames.isEmpty()) {
+            excludedTargetCodes = exerciseRepository.findTargetCodesByExerciseNames(recentExerciseNames);
+        }
+
+        // 4. 추천 운동 조회 (해당 부위 제외)
+        List<Exercise> exercises;
+        if (!excludedTargetCodes.isEmpty()) {
+            if (levelCode != null && !levelCode.isEmpty()) {
+                exercises = exerciseRepository.findByLevelCodeIdAndTargetCodeIdNotIn(levelCode, excludedTargetCodes);
+            } else {
+                exercises = exerciseRepository.findByTargetCodeIdNotIn(excludedTargetCodes);
+            }
         } else {
-            exercises = exerciseRepository.findAllByOrderByRecommendationScoreDesc();
+            // 제외할 부위가 없으면 기존 방식대로 조회
+            if (levelCode != null && !levelCode.isEmpty()) {
+                exercises = exerciseRepository.findByLevelCodeIdOrderByRecommendationScoreDesc(levelCode);
+            } else {
+                exercises = exerciseRepository.findAllByOrderByRecommendationScoreDesc();
+            }
+        }
+
+        // 5. 만약 제외하고 남은 운동이 너무 적으면 (예: 3개 미만), 제외 없이 다시 조회
+        if (exercises.size() < 3 && !excludedTargetCodes.isEmpty()) {
+            if (levelCode != null && !levelCode.isEmpty()) {
+                exercises = exerciseRepository.findByLevelCodeIdOrderByRecommendationScoreDesc(levelCode);
+            } else {
+                exercises = exerciseRepository.findAllByOrderByRecommendationScoreDesc();
+            }
         }
 
         // 상위 10개만 추천

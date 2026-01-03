@@ -41,7 +41,7 @@ const ExerciseListModal = ({ onClose, onAddPlans, userId, isRecommendation = fal
       let response;
       if (isRecommendation && pageNumber === 0 && !currentSearch && !currentFilters.categoryCode && !currentFilters.targetCode) {
         // 추천 모드이고 초기 상태일 때 추천 API 호출
-        const recoList = await ChallengeService.getRecommendations(currentFilters.levelCode || 'L10');
+        const recoList = await ChallengeService.getRecommendations(currentFilters.levelCode || 'L10', userId);
         response = {
           content: recoList,
           last: true // 추천은 페이징 없이 한 번에 가져옴

@@ -20,8 +20,16 @@ public class ExerciseController {
 
     // 추천 루틴 조회
     @GetMapping("/recommendation")
-    public ResponseEntity<List<ExerciseDto>> getRecommendations(@RequestParam(value = "levelCode", required = false) String levelCode) {
-        return ResponseEntity.ok(exerciseService.getRecommendedExercises(levelCode));
+    public ResponseEntity<List<ExerciseDto>> getRecommendations(
+            @RequestParam(value = "levelCode", required = false) String levelCode,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId) {
+        
+        // userId가 없으면 기본값 1L 사용 (개발 편의성)
+        if (userId == null) {
+            userId = 1L;
+        }
+        
+        return ResponseEntity.ok(exerciseService.getRecommendedExercises(levelCode, userId));
     }
 
     // 전체 운동 목록 조회 (페이징, 검색 및 필터링)
