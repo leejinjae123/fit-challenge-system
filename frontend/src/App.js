@@ -21,8 +21,8 @@ const AppGuard = ({ children }) => {
       // 2. 온보딩 완료 여부 확인
       const localOnboarded = localStorage.getItem('isOnboarded');
       
-      // 로그인/온보딩이 안 되어 있다면 로그인 페이지로 (단, 회원가입/로그인 페이지는 제외)
-      if (location.pathname === '/login' || location.pathname === '/onboarding') {
+      // 로그인/온보딩이 안 되어 있다면 로그인 페이지로 (단, 메인, 회원가입/로그인 페이지는 제외)
+      if (location.pathname === '/' || location.pathname === '/login' || location.pathname === '/onboarding') {
         setIsChecking(false);
         return;
       }
