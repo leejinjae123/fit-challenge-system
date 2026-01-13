@@ -66,21 +66,28 @@ const ExerciseListModal = ({ onClose, onAddPlans, userId, isRecommendation = fal
 
       const defaults = {};
       newExercises.forEach(ex => {
-        if (!planValues[ex.id]) {
-          defaults[ex.id] = { 
-            sets: ex.sets || 3, 
-            reps: ex.reps || 12 
-          };
-        }
+        defaults[ex.id] = { 
+          sets: ex.sets || 3, 
+          reps: ex.reps || 12 
+        };
       });
-      setPlanValues(prev => ({ ...prev, ...defaults }));
+      
+      setPlanValues(prev => {
+        const updated = { ...prev };
+        Object.keys(defaults).forEach(id => {
+          if (!updated[id]) {
+            updated[id] = defaults[id];
+          }
+        });
+        return updated;
+      });
 
     } catch (error) {
       console.error('Failed to load exercises:', error);
     } finally {
       setLoading(false);
     }
-  }, [isRecommendation, planValues]);
+  }, [isRecommendation, userId]);
 
   useEffect(() => {
     loadExercises(page, search, filters);
