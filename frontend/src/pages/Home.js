@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Card } from '../components/Common';
 import ChallengeService from '../services/ChallengeService';
 import AuthService from '../services/AuthService';
@@ -6,6 +7,7 @@ import ExerciseListModal from '../components/ExerciseListModal';
 import HistoryModal from '../components/HistoryModal';
 
 const Home = () => {
+  const navigate = useNavigate();
   const [plannedWorkouts, setPlannedWorkouts] = useState([]);
   const [completedRecords, setCompletedWorkouts] = useState([]);
   const [allWorkoutRecords, setAllWorkoutRecords] = useState([]);
@@ -15,29 +17,42 @@ const Home = () => {
   const [showRecommendationModal, setShowRecommendationModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
 
+  // 인증 체크 유틸리티
+  const requireAuth = () => {
+    if (!userInfo) {
+      if (window.confirm('로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?')) {
+        navigate('/login');
+      }
+      return false;
+    }
+    return true;
+  };
+
   // 데이터 로딩
   const loadData = async () => {
     try {
       setLoading(true);
       const user = await AuthService.getMyInfo();
-      setUserInfo(user);
-
-      const allRecords = await ChallengeService.getMyWorkoutRecords(user.id);
-      
-      // 오늘 날짜 구하기 (YYYY-MM-DD 형식)
-      const now = new Date();
-      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-      
-      // 오늘 계획만 필터링
-      const planned = allRecords.filter(r => 
-        r.status === 'PLANNED' && r.planDate === todayStr
-      );
-      
-      setPlannedWorkouts(planned);
-      setCompletedWorkouts(allRecords.filter(r => r.status === 'COMPLETED'));
-      setAllWorkoutRecords(allRecords); // 전체 기록 저장 (이전 계획 보기용)
+      if (user) {
+        setUserInfo(user);
+        const allRecords = await ChallengeService.getMyWorkoutRecords(user.id);
+        
+        // 오늘 날짜 구하기 (YYYY-MM-DD 형식)
+        const now = new Date();
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        
+        // 오늘 계획만 필터링
+        const planned = allRecords.filter(r => 
+          r.status === 'PLANNED' && r.planDate === todayStr
+        );
+        
+        setPlannedWorkouts(planned);
+        setCompletedWorkouts(allRecords.filter(r => r.status === 'COMPLETED'));
+        setAllWorkoutRecords(allRecords); // 전체 기록 저장 (이전 계획 보기용)
+      }
     } catch (error) {
       console.error('Data loading failed:', error);
+      // 로그인 안된 경우나 에러 발생 시 userInfo는 null로 유지
     } finally {
       setLoading(false);
     }
@@ -49,6 +64,7 @@ const Home = () => {
 
   // 계획 일괄 추가 핸들러
   const handleAddPlans = async (plans) => {
+    if (!requireAuth()) return;
     try {
       await Promise.all(plans.map(plan => 
         ChallengeService.createWorkoutRecord(plan, userInfo?.id)
@@ -64,6 +80,7 @@ const Home = () => {
 
   // 계획 완료 처리
   const handleCompletePlannedWorkout = async (workout) => {
+    if (!requireAuth()) return;
     try {
       if (!window.confirm(`${workout.exerciseType}을(를) 완료하셨나요?`)) return;
       await ChallengeService.completeWorkoutRecord(workout.id, userInfo?.id);
@@ -77,6 +94,7 @@ const Home = () => {
   // 계획 삭제 처리
   const handleDeleteWorkout = async (e, recordId) => {
     e.stopPropagation(); // 카드 클릭 방지
+    if (!requireAuth()) return;
     if (!window.confirm('이 계획을 삭제하시겠습니까?')) return;
     try {
       await ChallengeService.deleteWorkoutRecord(recordId, userInfo?.id);
@@ -92,7 +110,7 @@ const Home = () => {
     <>
       <div style={{ marginBottom: '20px' }}>
         <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '4px' }}>
-          안녕하세요, {userInfo?.nickname}님! 👋
+          안녕하세요, {userInfo ? `${userInfo.nickname}님!` : '방문자님!'} 👋
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
           오늘은 어떤 운동을 해볼까요?
@@ -103,7 +121,7 @@ const Home = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
         <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold' }}>오늘의 운동 계획</h3>
         <button 
-          onClick={() => setShowHistoryModal(true)}
+          onClick={() => requireAuth() && setShowHistoryModal(true)}
           style={{ 
             backgroundColor: 'transparent', 
             border: 'none', 
@@ -120,12 +138,13 @@ const Home = () => {
       <Card style={{ marginBottom: '20px' }}>
         {plannedWorkouts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '30px 0' }}>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', fontSize: '15px' }}>
-              아직 계획된 운동이 없습니다.<br/>
-              나에게 맞는 운동 루틴을 추천받아보세요!
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', fontSize: '15px', whiteSpace: 'pre-line' }}>
+              {userInfo 
+                ? '아직 계획된 운동이 없습니다.\n나에게 맞는 운동 루틴을 추천받아보세요!' 
+                : '로그인하시면 운동 계획을 관리하고\n루틴을 추천받을 수 있습니다.'}
             </p>
-            <Button onClick={() => setShowRecommendationModal(true)}>
-              운동 루틴 추천받기
+            <Button onClick={() => userInfo ? setShowRecommendationModal(true) : navigate('/login')}>
+              {userInfo ? '운동 루틴 추천받기' : '로그인하러 가기'}
             </Button>
           </div>
         ) : (
@@ -210,7 +229,7 @@ const Home = () => {
 
       {/* 하단 고정 버튼 */}
       <div style={styles.bottomButtonContainer}>
-        <button style={styles.fullWidthButton} onClick={() => setShowAllExercisesModal(true)}>
+        <button style={styles.fullWidthButton} onClick={() => requireAuth() && setShowAllExercisesModal(true)}>
           + 운동 계획 추가하기
         </button>
       </div>
