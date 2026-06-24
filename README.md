@@ -13,6 +13,38 @@
 
 ---
 
+## 로컬 Docker Desktop 실행
+
+Docker Desktop에서 로컬 이미지로 빌드해 실행하려면 아래 명령을 사용합니다.
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+```
+
+- 프론트엔드: http://localhost:3000
+- Gateway API: http://localhost:8080
+- Auth Service: http://localhost:8081
+- Challenge Service: http://localhost:8082
+- AI Service: http://localhost:5000/ai/health
+
+종료와 컨테이너 정리는 아래 명령을 사용합니다.
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.local.yml down
+```
+
+DB 데이터를 처음부터 다시 만들 때만 `mysql-data/` 폴더를 삭제합니다.
+
+운영/개발 서버 IP가 필요하면 로컬 `.env` 또는 서버 환경변수에 아래 값을 설정합니다.
+
+```bash
+KAFKA_ADVERTISED_HOST_NAME=<server-host>
+KAFKA_JMX_HOSTNAME=<server-host>
+LOCAL_INFRA_HOST=<server-host>
+```
+
+---
+
 ## 1. 사용 기술 스택 (Tech Stack)
 
 ### **Frontend**

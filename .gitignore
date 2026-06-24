@@ -54,6 +54,7 @@ yarn-error.log*
 !.env.sample
 *.local
 *.local.*
+!docker-compose.local.yml
 **/application-local.yml
 **/application-local.yaml
 **/application-local.properties

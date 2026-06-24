@@ -16,12 +16,10 @@ services:
     ports:
       - "9092:9092" # 로컬 개발용 외부 접속 허용
     environment:
-      # 외부(로컬 IDE)에서는 192.168.219.108로 접속
-      # 내부(Docker)에서도 이 IP로 접속 가능해야 함
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.219.108
+      KAFKA_ADVERTISED_HOST_NAME: ${KAFKA_ADVERTISED_HOST_NAME:-}
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "posture-data:1:1,challenge-events:1:1"
-      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=192.168.219.108 -Dcom.sun.management.jmxremote.rmi.port=9999"
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=${KAFKA_JMX_HOSTNAME:-} -Dcom.sun.management.jmxremote.rmi.port=9999"
       JMX_PORT: 9999
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
