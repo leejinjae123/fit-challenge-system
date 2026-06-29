@@ -26,6 +26,7 @@ docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
 - Auth Service: http://localhost:8081
 - Challenge Service: http://localhost:8082
 - AI Service: http://localhost:5000/ai/health
+- MySQL: localhost:3307
 
 종료와 컨테이너 정리는 아래 명령을 사용합니다.
 

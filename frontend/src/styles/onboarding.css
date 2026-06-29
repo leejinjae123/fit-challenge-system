@@ -1,25 +1,26 @@
 .onboarding-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  height: 100dvh;
-  background-color: var(--bg-color);
-  padding: 20px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 620px;
+  margin: 0 auto;
+  background: var(--bg-color);
+  padding: 24px;
 }
 
 .progress-bar {
   width: 100%;
-  height: 4px;
-  background-color: #E5E7EB;
-  border-radius: 2px;
-  margin-bottom: 40px;
-  margin-top: 20px;
+  height: 5px;
+  background-color: var(--card-bg-soft);
+  border-radius: 999px;
+  margin: 16px 0 42px;
 }
 
 .progress-fill {
   height: 100%;
   background-color: var(--primary-color);
-  border-radius: 2px;
+  border-radius: 999px;
   transition: width 0.3s ease;
 }
 
@@ -27,9 +28,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  animation: fadeIn 0.4s ease;
+  align-items: stretch;
+  animation: fadeIn 0.35s ease;
 }
 
 @keyframes fadeIn {
@@ -38,15 +38,16 @@
 }
 
 .step-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 900;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin: 0 0 10px;
 }
 
 .step-desc {
   color: var(--text-secondary);
-  margin-bottom: 40px;
+  line-height: 1.5;
+  margin: 0 0 34px;
 }
 
 .step-body {
@@ -60,14 +61,14 @@
   align-items: baseline;
   justify-content: center;
   gap: 8px;
+  width: 100%;
   border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 8px;
-  max-width: 200px;
+  padding-bottom: 10px;
 }
 
 .input-group input {
-  font-size: 40px;
-  font-weight: 700;
+  font-size: 42px;
+  font-weight: 900;
   color: var(--primary-color);
   border: none;
   background: transparent;
@@ -76,7 +77,6 @@
   outline: none;
 }
 
-/* Chrome, Safari, Edge, Opera의 input number 화살표 제거 */
 .input-group input::-webkit-outer-spin-button,
 .input-group input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -85,7 +85,7 @@
 
 .unit {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 800;
   color: var(--text-secondary);
 }
 
@@ -97,21 +97,22 @@
 }
 
 .select-btn {
-  padding: 15px 0;
+  min-height: 54px;
+  padding: 14px 10px;
   border-radius: var(--radius-md);
-  border: 1px solid #E5E7EB;
-  background: white;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .select-btn.selected {
   background-color: var(--primary-color);
-  color: white;
+  color: #061310;
   border-color: var(--primary-color);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .bottom-action {
@@ -119,23 +120,30 @@
   padding-bottom: 20px;
 }
 
-/* 회원가입 폼 스타일 추가 */
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .text-input {
   width: 100%;
-  padding: 16px;
-  border: 1px solid #E5E7EB;
-  border-radius: var(--radius-sm);
-  font-size: 16px;
+  min-height: 50px;
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 15px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.text-input::placeholder {
+  color: var(--text-muted);
 }
 
 .text-input:focus {
   border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 230, 200, 0.12);
 }

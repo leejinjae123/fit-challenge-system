@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 190" role="img" aria-label="어깨 운동 3D 데모">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="14%" r="78%"><stop offset="0" stop-color="#26373a"/><stop offset="1" stop-color="#101115"/></radialGradient>
+    <linearGradient id="body" x1="35" x2="119" y1="16" y2="168"><stop offset="0" stop-color="#f5f6f7"/><stop offset=".4" stop-color="#8a9098"/><stop offset="1" stop-color="#34383e"/></linearGradient>
+    <linearGradient id="muscle" x1="0" x2="1"><stop offset="0" stop-color="#2af2d0"/><stop offset="1" stop-color="#0e9f8d"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="6" flood-color="#000" flood-opacity=".42"/></filter>
+  </defs>
+  <rect width="160" height="190" fill="url(#bg)"/>
+  <ellipse cx="80" cy="169" rx="40" ry="9" fill="#050607" opacity=".45"/>
+  <g filter="url(#shadow)">
+    <circle cx="80" cy="27" r="13" fill="url(#body)"/>
+    <path d="M66 45c-8 14-9 36-4 53 5 15 31 15 36 0 5-17 4-39-4-53-8 5-20 5-28 0Z" fill="url(#body)"/>
+    <path d="M63 55 28 74l5 11 34-12Zm34 0 35 19-5 11-34-12Z" fill="url(#body)"/>
+    <path d="M66 101 53 157h13l13-50Zm29 0 13 56H95l-14-50Z" fill="url(#body)"/>
+  </g>
+  <g fill="url(#muscle)">
+    <ellipse cx="62" cy="58" rx="12" ry="10" transform="rotate(-24 62 58)"/>
+    <ellipse cx="98" cy="58" rx="12" ry="10" transform="rotate(24 98 58)"/>
+    <animate attributeName="opacity" values=".68;1;.68" dur="1.2s" repeatCount="indefinite"/>
+  </g>
+  <path d="M28 72h-13M132 72h13" stroke="#25e6c8" stroke-width="4" stroke-linecap="round">
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -10;0 0" dur="1.2s" repeatCount="indefinite"/>
+  </path>
+</svg>

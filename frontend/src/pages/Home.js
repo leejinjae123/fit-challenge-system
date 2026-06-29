@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card } from '../components/Common';
 import ChallengeService from '../services/ChallengeService';
 import AuthService from '../services/AuthService';
 import ExerciseListModal from '../components/ExerciseListModal';
 import HistoryModal from '../components/HistoryModal';
+
+const todayKey = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+};
 
 const Home = () => {
   const navigate = useNavigate();
@@ -17,10 +22,9 @@ const Home = () => {
   const [showRecommendationModal, setShowRecommendationModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
 
-  // 인증 체크 유틸리티
   const requireAuth = () => {
     if (!userInfo) {
-      if (window.confirm('로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?')) {
+      if (window.confirm('로그인이 필요한 기능입니다. 로그인 화면으로 이동할까요?')) {
         navigate('/login');
       }
       return false;
@@ -28,7 +32,6 @@ const Home = () => {
     return true;
   };
 
-  // 데이터 로딩
   const loadData = async () => {
     try {
       setLoading(true);
@@ -36,23 +39,13 @@ const Home = () => {
       if (user) {
         setUserInfo(user);
         const allRecords = await ChallengeService.getMyWorkoutRecords(user.id);
-        
-        // 오늘 날짜 구하기 (YYYY-MM-DD 형식)
-        const now = new Date();
-        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-        
-        // 오늘 계획만 필터링
-        const planned = allRecords.filter(r => 
-          r.status === 'PLANNED' && r.planDate === todayStr
-        );
-        
-        setPlannedWorkouts(planned);
-        setCompletedWorkouts(allRecords.filter(r => r.status === 'COMPLETED'));
-        setAllWorkoutRecords(allRecords); // 전체 기록 저장 (이전 계획 보기용)
+        setPlannedWorkouts(allRecords.filter(record => record.status === 'PLANNED' && record.planDate === todayKey()));
+        setCompletedWorkouts(allRecords.filter(record => record.status === 'COMPLETED'));
+        setAllWorkoutRecords(allRecords);
       }
     } catch (error) {
       console.error('Data loading failed:', error);
-      // 로그인 안된 경우나 에러 발생 시 userInfo는 null로 유지
+      setUserInfo(null);
     } finally {
       setLoading(false);
     }
@@ -62,135 +55,137 @@ const Home = () => {
     loadData();
   }, []);
 
-  // 계획 일괄 추가 핸들러
   const handleAddPlans = async (plans) => {
     if (!requireAuth()) return;
     try {
-      await Promise.all(plans.map(plan => 
-        ChallengeService.createWorkoutRecord(plan, userInfo?.id)
-      ));
-      alert(`${plans.length}개의 운동 계획이 추가되었습니다!`);
+      await Promise.all(plans.map(plan => ChallengeService.createWorkoutRecord(plan, userInfo?.id)));
+      alert(`${plans.length}개의 운동 계획을 추가했습니다.`);
       setShowAllExercisesModal(false);
       setShowRecommendationModal(false);
       loadData();
     } catch (error) {
-      alert('계획 추가 실패');
+      alert('계획 추가에 실패했습니다.');
     }
   };
 
-  // 계획 완료 처리
   const handleCompletePlannedWorkout = async (workout) => {
     if (!requireAuth()) return;
     try {
-      if (!window.confirm(`${workout.exerciseType}을(를) 완료하셨나요?`)) return;
+      if (!window.confirm(`${workout.exerciseType} 운동을 완료할까요?`)) return;
       await ChallengeService.completeWorkoutRecord(workout.id, userInfo?.id);
-      alert('운동 완료! 수고하셨습니다.');
+      alert('운동 완료. 수고하셨습니다.');
       loadData();
     } catch (error) {
-      alert('완료 처리 실패');
+      alert('완료 처리에 실패했습니다.');
     }
   };
 
-  // 계획 삭제 처리
-  const handleDeleteWorkout = async (e, recordId) => {
-    e.stopPropagation(); // 카드 클릭 방지
+  const handleDeleteWorkout = async (event, recordId) => {
+    event.stopPropagation();
     if (!requireAuth()) return;
-    if (!window.confirm('이 계획을 삭제하시겠습니까?')) return;
+    if (!window.confirm('이 계획을 삭제할까요?')) return;
     try {
       await ChallengeService.deleteWorkoutRecord(recordId, userInfo?.id);
       loadData();
     } catch (error) {
-      alert('삭제 실패');
+      alert('삭제에 실패했습니다.');
     }
   };
 
-  if (loading) return <div className="flex-center" style={{ height: '100%' }}>Loading...</div>;
+  const routineMeta = useMemo(() => {
+    const totalSets = plannedWorkouts.reduce((sum, workout) => sum + Number(workout.sets || 0), 0);
+    const minutes = plannedWorkouts.length === 0 ? 0 : Math.max(18, plannedWorkouts.length * 8 + totalSets * 2);
+    return { totalSets, minutes };
+  }, [plannedWorkouts]);
+
+  if (loading) {
+    return <div className="flex-center" style={{ height: '100%', color: 'var(--text-secondary)' }}>Loading...</div>;
+  }
 
   return (
     <>
-      <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '4px' }}>
-          안녕하세요, {userInfo ? `${userInfo.nickname}님!` : '방문자님!'} 👋
-        </h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-          오늘은 어떤 운동을 해볼까요?
-        </p>
-      </div>
+      <section style={styles.hero}>
+        <div>
+          <p style={styles.kicker}>오늘의 루틴</p>
+          <h2 style={styles.heroTitle}>
+            {userInfo ? `${userInfo.nickname}님, 바로 시작해볼까요?` : '로그인하고 맞춤 루틴을 받아보세요'}
+          </h2>
+        </div>
+        <div style={styles.metaRow}>
+          <Meta label="운동" value={`${plannedWorkouts.length}개`} />
+          <Meta label="예상" value={routineMeta.minutes ? `${routineMeta.minutes}분` : '-'} />
+          <Meta label="완료" value={`${completedRecords.length}회`} />
+        </div>
+        <Button onClick={() => userInfo ? setShowRecommendationModal(true) : navigate('/login')}>
+          {userInfo ? 'AI 추천 루틴 받기' : '로그인하기'}
+        </Button>
+      </section>
 
-      {/* 1. 오늘의 계획 목록 - 모달과 동일한 뷰 적용 */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold' }}>오늘의 운동 계획</h3>
-        <button 
+      <div style={styles.sectionHeader}>
+        <h3 style={styles.sectionTitle}>오늘의 운동 계획</h3>
+        <button
           onClick={() => requireAuth() && setShowHistoryModal(true)}
-          style={{ 
-            backgroundColor: 'transparent', 
-            border: 'none', 
-            color: '#4F46E5', 
-            fontSize: '14px', 
-            fontWeight: '600',
-            cursor: 'pointer',
-          }}
+          style={styles.textButton}
         >
-          이전 계획 보기
+          이전 계획
         </button>
       </div>
 
-      <Card style={{ marginBottom: '20px' }}>
+      <Card>
         {plannedWorkouts.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '30px 0' }}>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', fontSize: '15px', whiteSpace: 'pre-line' }}>
-              {userInfo 
-                ? '아직 계획된 운동이 없습니다.\n나에게 맞는 운동 루틴을 추천받아보세요!' 
-                : '로그인하시면 운동 계획을 관리하고\n루틴을 추천받을 수 있습니다.'}
-            </p>
+          <div style={styles.emptyState}>
+            <div style={styles.emptyVisual}>
+              <span style={styles.emptyPulse}></span>
+            </div>
+            <p style={styles.emptyTitle}>아직 계획된 운동이 없습니다.</p>
+            <p style={styles.emptyText}>운동 목록에서 직접 고르거나, 현재 레벨에 맞는 추천 루틴을 받아보세요.</p>
             <Button onClick={() => userInfo ? setShowRecommendationModal(true) : navigate('/login')}>
-              {userInfo ? '운동 루틴 추천받기' : '로그인하러 가기'}
+              {userInfo ? '추천 루틴 만들기' : '로그인 후 시작하기'}
             </Button>
           </div>
         ) : (
-          <div style={styles.gridList}>
-            {plannedWorkouts.map((workout) => (
-              <div 
-                key={workout.id} 
+          <div style={styles.planList}>
+            {plannedWorkouts.map((workout, index) => (
+              <button
+                key={workout.id}
                 style={styles.planCard}
                 onClick={() => handleCompletePlannedWorkout(workout)}
               >
-                <div style={styles.infoArea}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <h4 style={styles.exerciseName}>{workout.exerciseType}</h4>
-                    <button 
-                      onClick={(e) => handleDeleteWorkout(e, workout.id)}
-                      style={styles.deleteBtn}
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  <p style={styles.exerciseInfo}>{workout.sets}세트 ✕ {workout.reps}회</p>
-                  <div style={{ marginTop: '8px' }}>
-                    <span style={styles.statusBadge}>진행 중</span>
-                  </div>
-                </div>
-              </div>
+                <span style={styles.planIndex}>{String(index + 1).padStart(2, '0')}</span>
+                <span style={styles.planInfo}>
+                  <strong style={styles.exerciseName}>{workout.exerciseType}</strong>
+                  <span style={styles.exerciseInfo}>{workout.sets}세트 · {workout.reps}회</span>
+                </span>
+                <span style={styles.statusBadge}>진행 중</span>
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(event) => handleDeleteWorkout(event, workout.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') handleDeleteWorkout(event, workout.id);
+                  }}
+                  style={styles.deleteBtn}
+                >
+                  삭제
+                </span>
+              </button>
             ))}
           </div>
         )}
       </Card>
 
-      {/* 2. 최근 완료 기록 */}
       {completedRecords.length > 0 && (
-        <Card title="최근 완료 기록" style={{ marginBottom: '100px' }}>
-          <div style={styles.list}>
+        <Card title="최근 완료 기록">
+          <div style={styles.recordList}>
             {completedRecords.slice(0, 5).map((record) => (
               <div key={record.id} style={styles.recordItem}>
-                <div style={{ flex: 1 }}>
+                <div>
                   <span style={styles.recordType}>{record.exerciseType}</span>
-                  <span style={styles.recordDate}>
-                    {new Date(record.performedAt).toLocaleDateString()}
-                  </span>
+                  <span style={styles.recordDate}>{new Date(record.performedAt).toLocaleDateString()}</span>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <span style={styles.recordCount}>{record.count}회</span>
-                  <span style={styles.recordAccuracy}>정확도 {Math.round(record.accuracy * 100)}%</span>
+                <div style={styles.recordStats}>
+                  <span>{record.count || '-'}회</span>
+                  <small>정확도 {Math.round((record.accuracy || 0) * 100)}%</small>
                 </div>
               </div>
             ))}
@@ -198,18 +193,16 @@ const Home = () => {
         </Card>
       )}
 
-      {/* 전체 운동 목록 모달 (다중 선택 지원) */}
       {showAllExercisesModal && (
-        <ExerciseListModal 
+        <ExerciseListModal
           onClose={() => setShowAllExercisesModal(false)}
           onAddPlans={handleAddPlans}
           userId={userInfo?.id}
         />
       )}
 
-      {/* 추천 운동 모달 (숙련도 기준 정렬) */}
       {showRecommendationModal && (
-        <ExerciseListModal 
+        <ExerciseListModal
           onClose={() => setShowRecommendationModal(false)}
           onAddPlans={handleAddPlans}
           userId={userInfo?.id}
@@ -218,195 +211,213 @@ const Home = () => {
         />
       )}
 
-      {/* 이전 계획 보기 모달 */}
       {showHistoryModal && (
-        <HistoryModal 
+        <HistoryModal
           onClose={() => setShowHistoryModal(false)}
           allRecords={allWorkoutRecords}
-          userId={userInfo?.id}
         />
       )}
 
-      {/* 하단 고정 버튼 */}
       <div style={styles.bottomButtonContainer}>
         <button style={styles.fullWidthButton} onClick={() => requireAuth() && setShowAllExercisesModal(true)}>
-          + 운동 계획 추가하기
+          운동 계획 추가하기
         </button>
       </div>
     </>
   );
 };
 
+const Meta = ({ label, value }) => (
+  <div style={styles.metaItem}>
+    <span>{label}</span>
+    <strong>{value}</strong>
+  </div>
+);
+
 const styles = {
-  list: {
+  hero: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '12px',
-  },
-  gridList: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '12px',
-  },
-  // 모달 스타일을 적용한 계획 카드
-  planCard: {
-    display: 'flex',
-    flexDirection: 'column', // 가로 2열이므로 세로 배치가 더 어울림
-    justifyContent: 'space-between',
-    padding: '16px',
-    backgroundColor: '#fff',
-    borderRadius: '16px', // 더 둥글게
-    border: '1px solid #f3f4f6',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', // 그림자 강화
-    cursor: 'pointer',
-    minHeight: '120px',
-    transition: 'transform 0.2s ease',
-  },
-  // 추천 카드 스타일
-  recoCard: {
-    backgroundColor: '#F9FAFB',
+    gap: '18px',
+    padding: '22px',
     borderRadius: '16px',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-    border: '1px solid #E5E7EB',
+    background: 'linear-gradient(145deg, rgba(37, 230, 200, 0.16), rgba(32, 35, 41, 0.92) 42%, rgba(22, 24, 29, 1))',
+    border: '1px solid rgba(37, 230, 200, 0.22)',
+    boxShadow: 'var(--shadow-md)',
   },
-  recoImageArea: {
-    height: '80px',
-    backgroundColor: '#E5E7EB',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  kicker: {
+    margin: '0 0 8px',
+    color: 'var(--primary-color)',
+    fontSize: '13px',
+    fontWeight: '800',
   },
-  recoInfo: {
-    padding: '12px',
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  recoName: {
-    fontSize: '14px',
-    fontWeight: 'bold',
-    margin: '0 0 4px 0',
-    color: '#111827',
-  },
-  recoDesc: {
-    fontSize: '11px',
-    color: '#6B7280',
-    margin: '0 0 12px 0',
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
-    height: '32px',
-  },
-  recoActions: {
-    display: 'flex',
-    gap: '6px',
-    marginTop: 'auto',
-  },
-  addBtn: {
-    flex: 2,
-    padding: '6px 0',
-    backgroundColor: '#10B981',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '12px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-  },
-  removeBtn: {
-    flex: 1,
-    padding: '6px 0',
-    backgroundColor: '#EF4444',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '12px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-  },
-  infoArea: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  exerciseName: {
-    fontSize: '17px', // 살짝 더 크게
-    fontWeight: 'bold',
-    margin: '0 0 8px 0',
-    color: '#111827',
-    lineHeight: '1.3',
-  },
-  exerciseInfo: {
-    fontSize: '15px', // 살짝 더 크게
-    color: '#10B981', 
-    fontWeight: '800', // 더 굵게
+  heroTitle: {
     margin: 0,
+    fontSize: '25px',
+    lineHeight: 1.25,
+    fontWeight: '900',
   },
-  deleteBtn: {
+  metaRow: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '8px',
+  },
+  metaItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+    padding: '12px',
+    borderRadius: '12px',
+    background: 'rgba(255, 255, 255, 0.06)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    color: 'var(--text-secondary)',
+    fontSize: '12px',
+  },
+  sectionHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  sectionTitle: {
+    margin: 0,
+    fontSize: '18px',
+    fontWeight: '900',
+  },
+  textButton: {
     background: 'none',
     border: 'none',
-    color: '#9CA3AF',
-    fontSize: '16px',
+    color: 'var(--primary-color)',
+    fontSize: '14px',
+    fontWeight: '800',
     cursor: 'pointer',
-    padding: '0 0 0 8px',
+  },
+  emptyState: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '24px 8px',
+    textAlign: 'center',
+  },
+  emptyVisual: {
+    width: '78px',
+    height: '78px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(37, 230, 200, 0.26), rgba(37, 230, 200, 0.04) 68%)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyPulse: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '50%',
+    background: 'var(--primary-color)',
+    boxShadow: '0 0 24px rgba(37, 230, 200, 0.55)',
+  },
+  emptyTitle: {
+    margin: 0,
+    fontSize: '17px',
+    fontWeight: '900',
+  },
+  emptyText: {
+    margin: 0,
+    color: 'var(--text-secondary)',
+    fontSize: '14px',
+    lineHeight: 1.5,
+  },
+  planList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+  },
+  planCard: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: '34px 1fr auto',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '13px',
+    background: 'var(--card-bg)',
+    border: '1px solid var(--border-color)',
+    borderRadius: '12px',
+    textAlign: 'left',
+    cursor: 'pointer',
+  },
+  planIndex: {
+    color: 'var(--primary-color)',
+    fontWeight: '900',
+    fontSize: '13px',
+  },
+  planInfo: {
+    minWidth: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  },
+  exerciseName: {
+    color: 'var(--text-primary)',
+    fontSize: '15px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  exerciseInfo: {
+    color: 'var(--text-secondary)',
+    fontSize: '12px',
+    fontWeight: '700',
   },
   statusBadge: {
-    fontSize: '10px',
-    padding: '2px 8px',
-    backgroundColor: '#EEF2FF',
-    color: '#4F46E5',
-    borderRadius: '4px',
-    fontWeight: '500',
+    padding: '5px 8px',
+    borderRadius: '999px',
+    background: 'rgba(37, 230, 200, 0.12)',
+    color: 'var(--primary-color)',
+    fontSize: '11px',
+    fontWeight: '900',
   },
-  imageArea: {
-    width: '70px',
-    minWidth: '70px',
-    backgroundColor: '#F3F4F6',
-    borderRadius: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  deleteBtn: {
+    gridColumn: '3',
+    color: 'var(--text-muted)',
+    fontSize: '11px',
+    fontWeight: '800',
   },
-  imagePlaceholder: {
+  recordList: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    gap: '10px',
   },
   recordItem: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '12px 0',
-    borderBottom: '1px solid #F3F4F6',
+    gap: '12px',
+    padding: '12px',
+    borderRadius: '12px',
+    background: 'var(--card-bg)',
+    border: '1px solid var(--border-color)',
   },
   recordType: {
     display: 'block',
-    fontSize: '15px',
-    fontWeight: '600',
+    fontSize: '14px',
+    fontWeight: '800',
   },
   recordDate: {
+    color: 'var(--text-muted)',
     fontSize: '12px',
-    color: '#9CA3AF',
   },
-  recordCount: {
-    display: 'block',
-    fontSize: '16px',
-    fontWeight: 'bold',
+  recordStats: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: '3px',
     color: 'var(--primary-color)',
-  },
-  recordAccuracy: {
-    fontSize: '11px',
-    color: '#6B7280',
+    fontWeight: '900',
   },
   bottomButtonContainer: {
     position: 'fixed',
-    bottom: 'calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 16px)',
+    bottom: 'calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 14px)',
     left: '0',
     right: '0',
-    padding: '0 20px',
+    padding: '0 16px',
     zIndex: 5,
     display: 'flex',
     justifyContent: 'center',
@@ -414,16 +425,17 @@ const styles = {
   },
   fullWidthButton: {
     width: '100%',
-    maxWidth: '600px',
-    padding: '14px',
+    maxWidth: '588px',
+    minHeight: '48px',
+    padding: '13px 16px',
     borderRadius: '12px',
-    backgroundColor: '#10B981',
-    color: 'white',
+    backgroundColor: 'var(--primary-color)',
+    color: '#061310',
     border: 'none',
     fontSize: '15px',
-    fontWeight: 'bold',
+    fontWeight: '900',
     cursor: 'pointer',
-    boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
+    boxShadow: 'var(--shadow-lg)',
     pointerEvents: 'auto',
   }
 };

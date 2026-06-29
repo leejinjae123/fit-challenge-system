@@ -11,6 +11,7 @@ public class ExerciseDto {
     private Long id;
     private String exerciseName;
     private String description;
+    private String imageUrl;
     private Integer recommendationScore;
     
     // 화면 표시용 (간단하게)
@@ -28,6 +29,7 @@ public class ExerciseDto {
         dto.setId(exercise.getId());
         dto.setExerciseName(exercise.getExerciseName());
         dto.setDescription(exercise.getDescription());
+        dto.setImageUrl(exercise.getImageUrl());
         dto.setRecommendationScore(exercise.getRecommendationScore());
         
         if (exercise.getLevel() != null) dto.setLevelCode(exercise.getLevel().getCodeId());

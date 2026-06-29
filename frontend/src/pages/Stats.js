@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Button } from '../components/Common';
 import ChallengeService from '../services/ChallengeService';
 import AuthService from '../services/AuthService';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const Stats = () => {
   const [workouts, setWorkouts] = useState([]);
@@ -29,77 +29,56 @@ const Stats = () => {
     loadData();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!weight) return alert('몸무게를 입력해주세요.');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!weight) {
+      alert('몸무게를 입력해주세요.');
+      return;
+    }
 
     try {
-      await ChallengeService.saveUserWorkout({
-        weight: parseFloat(weight),
-        memo,
-      }, userId);
-      alert('기록되었습니다!');
+      await ChallengeService.saveUserWorkout({ weight: parseFloat(weight), memo }, userId);
       setWeight('');
       setMemo('');
       loadData();
     } catch (error) {
-      alert('저장 실패');
+      alert('저장에 실패했습니다.');
     }
   };
 
-  if (loading) return <div className="flex-center" style={{ height: '200px' }}>데이터 로딩 중...</div>;
+  if (loading) {
+    return <div className="flex-center" style={{ height: '200px', color: 'var(--text-secondary)' }}>데이터 로딩 중...</div>;
+  }
 
   const today = new Date().toISOString().split('T')[0];
-  const isRecordedToday = workouts.some(w => w.createdAt === today);
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div style={{ backgroundColor: 'white', padding: '10px', border: '1px solid #ccc', borderRadius: '8px' }}>
-          <p style={{ fontWeight: 'bold', margin: '0 0 5px 0' }}>{label}</p>
-          <p style={{ color: '#4F46E5', margin: '0' }}>몸무게: {data.weight}kg</p>
-          <p style={{ color: '#10B981', margin: '0' }}>성공률: {Math.round(data.successRate)}%</p>
-          {data.memo && (
-            <p style={{ color: '#6B7280', margin: '5px 0 0 0', fontSize: '12px', maxWidth: '200px' }}>
-              메모: {data.memo}
-            </p>
-          )}
-        </div>
-      );
-    }
-    return null;
-  };
+  const isRecordedToday = workouts.some(workout => workout.createdAt === today);
 
   return (
-    <div style={{ paddingBottom: '100px' }}>
-      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '20px' }}>운동 통계 및 기록</h2>
+    <div style={styles.page}>
+      <div>
+        <p style={styles.kicker}>분석</p>
+        <h2 style={styles.title}>운동 기록</h2>
+      </div>
 
-      {/* 1. 몸무게 그래프 (성공률/메모는 툴팁에 표시) */}
-      <Card title="변화 추이" style={{ marginBottom: '20px' }}>
+      <Card title="변화 추이">
         {workouts.length === 0 ? (
-          <p style={{ textAlign: 'center', padding: '40px 0', color: '#9CA3AF' }}>기록된 데이터가 없습니다.</p>
+          <p style={styles.emptyText}>아직 기록된 데이터가 없습니다.</p>
         ) : (
-          <div style={{ width: '100%', height: 300, marginTop: '20px' }}>
+          <div style={styles.chart}>
             <ResponsiveContainer>
               <LineChart data={workouts}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis 
-                  dataKey="createdAt" 
-                  tick={{ fontSize: 12 }} 
-                  tickFormatter={(val) => val.substring(5)} // MM-DD만 표기
-                />
-                <YAxis orientation="left" stroke="#4F46E5" tick={{ fontSize: 12 }} domain={['dataMin - 5', 'dataMax + 5']} />
+                <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
+                <XAxis dataKey="createdAt" tick={{ fontSize: 12, fill: '#a9afba' }} tickFormatter={(value) => value.substring(5)} />
+                <YAxis orientation="left" stroke="#25e6c8" tick={{ fontSize: 12, fill: '#a9afba' }} domain={['dataMin - 5', 'dataMax + 5']} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                <Line 
-                  type="monotone" 
-                  dataKey="weight" 
-                  name="몸무게 (kg)" 
-                  stroke="#4F46E5" 
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }} 
+                <Line
+                  type="monotone"
+                  dataKey="weight"
+                  name="몸무게"
+                  stroke="#25e6c8"
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: '#25e6c8' }}
+                  activeDot={{ r: 6 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -107,60 +86,53 @@ const Stats = () => {
         )}
       </Card>
 
-      {/* 2. 오늘 기록 등록 (기록되지 않은 경우에만 표시) */}
       {!isRecordedToday ? (
-        <Card title="오늘의 기록 등록" style={{ marginBottom: '20px' }}>
+        <Card title="오늘 기록 등록">
           <form onSubmit={handleSubmit} style={styles.form}>
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>오늘의 몸무게 (kg)</label>
-              <input 
-                type="number" 
+            <label style={styles.inputGroup}>
+              <span style={styles.label}>오늘의 몸무게</span>
+              <input
+                type="number"
                 step="0.1"
                 value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                placeholder="예: 75.5"
-                style={styles.input}
+                onChange={(event) => setWeight(event.target.value)}
+                placeholder="75.5"
+                className="text-input"
               />
-            </div>
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>운동 메모</label>
-              <textarea 
+            </label>
+            <label style={styles.inputGroup}>
+              <span style={styles.label}>운동 메모</span>
+              <textarea
                 value={memo}
-                onChange={(e) => setMemo(e.target.value)}
+                onChange={(event) => setMemo(event.target.value)}
                 placeholder="오늘 운동은 어땠나요?"
-                style={{ ...styles.input, height: '80px', resize: 'none' }}
+                className="text-input"
+                style={{ height: '92px', resize: 'none' }}
               />
-            </div>
-            <p style={styles.infoText}>
-              * 성공률은 오늘 '계획됨' 상태인 운동 중 '완료'된 비율로 자동 계산됩니다.
-            </p>
-            <Button type="submit" variant="primary" style={{ width: '100%' }}>
-              기록하기
-            </Button>
+            </label>
+            <p style={styles.infoText}>성공률은 오늘 계획 중 완료한 운동 비율로 계산됩니다.</p>
+            <Button type="submit">기록하기</Button>
           </form>
         </Card>
       ) : (
-        <Card style={{ marginBottom: '20px', backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }}>
-          <div style={{ textAlign: 'center', padding: '10px' }}>
-            <span style={{ color: '#166534', fontWeight: 'bold' }}>✅ 오늘의 기록이 완료되었습니다!</span>
-          </div>
+        <Card style={styles.doneCard}>
+          <strong>오늘 기록이 완료되었습니다.</strong>
         </Card>
       )}
 
-      {/* 3. 최근 메모 리스트 */}
       <Card title="최근 메모">
         {workouts.length === 0 ? (
-          <p style={{ textAlign: 'center', padding: '20px 0', color: '#9CA3AF' }}>메모가 없습니다.</p>
+          <p style={styles.emptyText}>메모가 없습니다.</p>
         ) : (
           <div style={styles.memoList}>
-            {workouts.slice().reverse().map(w => (
-              <div key={w.id} style={styles.memoItem}>
+            {workouts.slice().reverse().map(workout => (
+              <div key={workout.id} style={styles.memoItem}>
                 <div style={styles.memoHeader}>
-                  <span style={styles.memoDate}>{w.createdAt}</span>
-                  <span style={styles.memoWeight}>{w.weight}kg</span>
+                  <span style={styles.memoDate}>{workout.createdAt}</span>
+                  <span style={styles.memoWeight}>{workout.weight}kg</span>
                 </div>
-                <p style={styles.memoContent}>{w.memo || '메모 없음'}</p>
-                <div style={styles.memoRate}>성공률: {Math.round(w.successRate)}%</div>
+                <p style={styles.memoContent}>{workout.memo || '메모 없음'}</p>
+                <div style={styles.memoRate}>성공률 {Math.round(workout.successRate || 0)}%</div>
               </div>
             ))}
           </div>
@@ -170,46 +142,82 @@ const Stats = () => {
   );
 };
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (!active || !payload || payload.length === 0) return null;
+
+  const data = payload[0].payload;
+  return (
+    <div style={styles.tooltip}>
+      <p style={{ fontWeight: '900', margin: '0 0 6px' }}>{label}</p>
+      <p style={{ color: 'var(--primary-color)', margin: 0 }}>몸무게 {data.weight}kg</p>
+      <p style={{ color: 'var(--accent-warm)', margin: 0 }}>성공률 {Math.round(data.successRate || 0)}%</p>
+      {data.memo && <p style={styles.tooltipMemo}>메모: {data.memo}</p>}
+    </div>
+  );
+};
+
 const styles = {
+  page: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '18px',
+  },
+  kicker: {
+    color: 'var(--primary-color)',
+    margin: '0 0 6px',
+    fontSize: '13px',
+    fontWeight: '900',
+  },
+  title: {
+    margin: 0,
+    fontSize: '25px',
+    fontWeight: '900',
+  },
+  emptyText: {
+    textAlign: 'center',
+    padding: '28px 0',
+    margin: 0,
+    color: 'var(--text-secondary)',
+  },
+  chart: {
+    width: '100%',
+    height: 290,
+  },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '16px',
-    marginTop: '10px',
+    gap: '14px',
   },
   inputGroup: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '6px',
+    gap: '7px',
   },
   label: {
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#374151',
-  },
-  input: {
-    padding: '12px',
-    borderRadius: '8px',
-    border: '1px solid #D1D5DB',
-    fontSize: '15px',
-    outline: 'none',
+    color: 'var(--text-secondary)',
+    fontSize: '13px',
+    fontWeight: '800',
   },
   infoText: {
+    margin: 0,
+    color: 'var(--text-muted)',
     fontSize: '12px',
-    color: '#6B7280',
-    margin: '0 0 8px 0',
+    lineHeight: 1.5,
+  },
+  doneCard: {
+    borderColor: 'rgba(37, 230, 200, 0.28)',
+    color: 'var(--primary-color)',
   },
   memoList: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '12px',
-    marginTop: '10px',
+    gap: '10px',
   },
   memoItem: {
     padding: '12px',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: 'var(--card-bg)',
     borderRadius: '12px',
-    border: '1px solid #F3F4F6',
+    border: '1px solid var(--border-color)',
   },
   memoHeader: {
     display: 'flex',
@@ -218,24 +226,37 @@ const styles = {
   },
   memoDate: {
     fontSize: '13px',
-    fontWeight: 'bold',
-    color: '#4B5563',
+    fontWeight: '800',
+    color: 'var(--text-secondary)',
   },
   memoWeight: {
     fontSize: '13px',
-    color: '#4F46E5',
-    fontWeight: 'bold',
+    color: 'var(--primary-color)',
+    fontWeight: '900',
   },
   memoContent: {
     fontSize: '14px',
-    margin: '0 0 8px 0',
-    lineHeight: '1.4',
-    color: '#1F2937',
+    margin: '0 0 8px',
+    lineHeight: 1.45,
+    color: 'var(--text-primary)',
   },
   memoRate: {
     fontSize: '12px',
-    color: '#10B981',
-    fontWeight: '600',
+    color: 'var(--accent-warm)',
+    fontWeight: '900',
+  },
+  tooltip: {
+    background: 'var(--surface-bg)',
+    padding: '10px',
+    border: '1px solid var(--border-color)',
+    borderRadius: '10px',
+    color: 'var(--text-primary)',
+  },
+  tooltipMemo: {
+    color: 'var(--text-secondary)',
+    margin: '6px 0 0',
+    fontSize: '12px',
+    maxWidth: '200px',
   }
 };
 

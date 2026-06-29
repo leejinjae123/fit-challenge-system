@@ -33,6 +33,9 @@ public class Exercise {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "image_url", length = 255)
+    private String imageUrl;
+
     @Column(name = "recommendation_score")
     private Integer recommendationScore = 3;
 }

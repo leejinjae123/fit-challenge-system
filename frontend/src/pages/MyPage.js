@@ -34,14 +34,9 @@ const MyPage = () => {
   }, []);
 
   const handleLogout = () => {
-    // 모든 로컬 저장소 데이터 초기화
     localStorage.clear();
     sessionStorage.clear();
-    
-    // 상태 초기화
     setUserInfo(null);
-
-    // 페이지를 새로고침하며 로그인 페이지로 이동 (메모리상 상태 완전 초기화)
     window.location.replace('/login');
   };
 
@@ -58,118 +53,65 @@ const MyPage = () => {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setEditForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
       await AuthService.updateMyInfo(editForm);
       await fetchMyInfo();
       setIsEditing(false);
-      alert('정보가 수정되었습니다.');
     } catch (error) {
       console.error('Failed to update info:', error);
       alert('정보 수정에 실패했습니다.');
     }
   };
 
-  const getLevelLabel = (code) => {
-    switch(code) {
-      case 'L10': return '초급';
-      case 'L20': return '중급';
-      case 'L30': return '고급';
-      default: return '미설정';
-    }
-  };
-
-  if (!userInfo) return <div>Loading...</div>;
+  if (!userInfo) {
+    return <div style={{ color: 'var(--text-secondary)' }}>Loading...</div>;
+  }
 
   return (
-    <div style={{ paddingBottom: '20px' }}>
-      <Card title="내 프로필" style={{ marginBottom: '20px' }}>
+    <div style={styles.page}>
+      <div>
+        <p style={styles.kicker}>프로필</p>
+        <h2 style={styles.title}>내 정보</h2>
+      </div>
+
+      <Card title="프로필">
         {isEditing ? (
           <form onSubmit={handleSubmit} style={styles.form}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>닉네임</label>
-              <input
-                type="text"
-                name="nickname"
-                value={editForm.nickname}
-                onChange={handleChange}
-                style={styles.input}
-                required
-              />
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>키 (cm)</label>
-              <input
-                type="number"
-                name="height"
-                value={editForm.height}
-                onChange={handleChange}
-                style={styles.input}
-                required
-              />
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>몸무게 (kg)</label>
-              <input
-                type="number"
-                name="weight"
-                value={editForm.weight}
-                onChange={handleChange}
-                style={styles.input}
-                required
-              />
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>운동 레벨</label>
-              <select
-                name="levelCode"
-                value={editForm.levelCode}
-                onChange={handleChange}
-                style={styles.input}
-                required
-              >
+            <FormField label="닉네임" name="nickname" value={editForm.nickname} onChange={handleChange} />
+            <FormField label="키(cm)" type="number" name="height" value={editForm.height} onChange={handleChange} />
+            <FormField label="몸무게(kg)" type="number" name="weight" value={editForm.weight} onChange={handleChange} />
+
+            <label style={styles.formGroup}>
+              <span style={styles.label}>운동 레벨</span>
+              <select name="levelCode" value={editForm.levelCode} onChange={handleChange} className="text-input" required>
                 <option value="L10">초급</option>
                 <option value="L20">중급</option>
-                <option value="L30">고급</option>
+                <option value="L30">상급</option>
               </select>
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>주간 목표 (회)</label>
-              <input
-                type="number"
-                name="weeklyGoal"
-                value={editForm.weeklyGoal}
-                onChange={handleChange}
-                style={styles.input}
-                required
-              />
-            </div>
+            </label>
+
+            <FormField label="주간 목표(회)" type="number" name="weeklyGoal" value={editForm.weeklyGoal} onChange={handleChange} />
+
             <div style={styles.buttonGroup}>
-              <Button type="submit" variant="primary" style={{ flex: 1 }}>저장</Button>
-              <Button type="button" variant="secondary" onClick={handleEditToggle} style={{ flex: 1, marginLeft: '10px' }}>취소</Button>
+              <Button type="submit">저장</Button>
+              <Button type="button" variant="secondary" onClick={handleEditToggle}>취소</Button>
             </div>
           </form>
         ) : (
           <>
             <div style={styles.profileHeader}>
-              <div style={styles.avatar}>👤</div>
+              <div style={styles.avatar}>{(userInfo.nickname || 'F').slice(0, 1).toUpperCase()}</div>
               <h3 style={styles.nickname}>{userInfo.nickname}</h3>
               <p style={styles.email}>{userInfo.email}</p>
             </div>
-            <div style={{ textAlign: 'center', marginTop: '10px' }}>
-              <Button variant="outline" onClick={handleEditToggle} style={{ padding: '4px 12px', fontSize: '14px' }}>
-                수정하기
-              </Button>
-            </div>
+            <Button variant="outline" onClick={handleEditToggle}>정보 수정</Button>
           </>
         )}
       </Card>
@@ -179,20 +121,23 @@ const MyPage = () => {
           <div style={styles.metricsGrid}>
             <MetricItem label="키" value={`${userInfo.height} cm`} />
             <MetricItem label="몸무게" value={`${userInfo.weight} kg`} />
-            <MetricItem label="운동 레벨" value={getLevelLabel(userInfo.levelCode)} />
-            <MetricItem label="주간 목표" value={`${userInfo.weeklyGoal} 회`} />
+            <MetricItem label="레벨" value={getLevelLabel(userInfo.levelCode)} />
+            <MetricItem label="주간 목표" value={`${userInfo.weeklyGoal}회`} />
           </div>
         </Card>
       )}
 
-      <div style={{ marginTop: '20px' }}>
-        <Button variant="secondary" onClick={handleLogout}>
-          로그아웃
-        </Button>
-      </div>
+      <Button variant="secondary" onClick={handleLogout}>로그아웃</Button>
     </div>
   );
 };
+
+const FormField = ({ label, type = 'text', name, value, onChange }) => (
+  <label style={styles.formGroup}>
+    <span style={styles.label}>{label}</span>
+    <input type={type} name={name} value={value} onChange={onChange} className="text-input" required />
+  </label>
+);
 
 const MetricItem = ({ label, value }) => (
   <div style={styles.metricItem}>
@@ -201,28 +146,55 @@ const MetricItem = ({ label, value }) => (
   </div>
 );
 
+const getLevelLabel = (code) => {
+  switch (code) {
+    case 'L10': return '초급';
+    case 'L20': return '중급';
+    case 'L30': return '상급';
+    default: return '미설정';
+  }
+};
+
 const styles = {
+  page: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '18px',
+  },
+  kicker: {
+    color: 'var(--primary-color)',
+    margin: '0 0 6px',
+    fontSize: '13px',
+    fontWeight: '900',
+  },
+  title: {
+    margin: 0,
+    fontSize: '25px',
+    fontWeight: '900',
+  },
   profileHeader: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: '10px',
+    marginBottom: '16px',
   },
   avatar: {
-    fontSize: '48px',
-    marginBottom: '10px',
-    backgroundColor: '#F3F4F6',
+    width: '78px',
+    height: '78px',
     borderRadius: '50%',
-    width: '80px',
-    height: '80px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: '12px',
+    background: 'linear-gradient(145deg, rgba(37, 230, 200, 0.9), rgba(37, 230, 200, 0.22))',
+    color: '#061310',
+    fontSize: '28px',
+    fontWeight: '900',
   },
   nickname: {
     fontSize: '20px',
-    fontWeight: '700',
-    margin: '0 0 4px 0',
+    fontWeight: '900',
+    margin: '0 0 4px',
   },
   email: {
     color: 'var(--text-secondary)',
@@ -232,51 +204,47 @@ const styles = {
   metricsGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '16px',
-    width: '100%',
+    gap: '10px',
   },
   metricItem: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    padding: '12px',
-    backgroundColor: '#F9FAFB',
-    borderRadius: '8px',
+    gap: '5px',
+    padding: '13px',
+    backgroundColor: 'var(--card-bg)',
+    borderRadius: '12px',
+    border: '1px solid var(--border-color)',
   },
   metricLabel: {
     fontSize: '12px',
     color: 'var(--text-secondary)',
-    marginBottom: '4px',
+    fontWeight: '800',
   },
   metricValue: {
-    fontSize: '16px',
-    fontWeight: '600',
+    fontSize: '17px',
+    fontWeight: '900',
     color: 'var(--primary-color)',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '12px',
+    gap: '13px',
   },
   formGroup: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px',
+    gap: '7px',
   },
   label: {
-    fontSize: '14px',
-    fontWeight: '600',
+    fontSize: '13px',
+    fontWeight: '800',
     color: 'var(--text-secondary)',
   },
-  input: {
-    padding: '10px',
-    borderRadius: '8px',
-    border: '1px solid #D1D5DB',
-    fontSize: '16px',
-  },
   buttonGroup: {
-    display: 'flex',
-    marginTop: '10px',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '10px',
+    marginTop: '6px',
   }
 };
 

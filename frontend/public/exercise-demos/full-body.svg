@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 190" role="img" aria-label="전신 운동 3D 데모">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="16%" r="76%"><stop offset="0" stop-color="#26373a"/><stop offset="1" stop-color="#101115"/></radialGradient>
+    <linearGradient id="body" x1="34" x2="118" y1="16" y2="168"><stop offset="0" stop-color="#f6f7f8"/><stop offset=".38" stop-color="#8c929a"/><stop offset="1" stop-color="#363a40"/></linearGradient>
+    <linearGradient id="muscle" x1="0" x2="1"><stop offset="0" stop-color="#2af2d0"/><stop offset="1" stop-color="#0e9f8d"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="6" flood-color="#000" flood-opacity=".42"/></filter>
+  </defs>
+  <rect width="160" height="190" fill="url(#bg)"/>
+  <ellipse cx="80" cy="168" rx="42" ry="9" fill="#050607" opacity=".45"/>
+  <g filter="url(#shadow)" transform="translate(1 2)">
+    <circle cx="78" cy="26" r="13" fill="url(#body)"/>
+    <path d="M66 43c-8 13-10 35-6 52 4 18 32 18 38 2 6-17 5-40-3-54-8 5-21 5-29 0Z" fill="url(#body)"/>
+    <path d="M62 53 34 91l8 8 24-27Zm37 0 27 38-8 8-24-27Z" fill="url(#body)"/>
+    <path d="M65 100 50 154h14l14-48Zm31 0 15 54H97l-14-48Z" fill="url(#body)"/>
+    <path d="M65 58c8 6 22 6 31 0" fill="none" stroke="#f7f8fa" stroke-width="2" opacity=".34"/>
+  </g>
+  <g fill="url(#muscle)" opacity=".92">
+    <path d="M65 55c7 5 21 5 29 0l4 18c-10 7-28 7-37 0Z"/>
+    <ellipse cx="48" cy="86" rx="8" ry="16" transform="rotate(34 48 86)"/>
+    <ellipse cx="112" cy="86" rx="8" ry="16" transform="rotate(-34 112 86)"/>
+    <path d="M61 106h15l-10 43H53Z"/>
+    <path d="M84 106h15l8 43H94Z"/>
+    <animate attributeName="opacity" values=".75;1;.75" dur="1.5s" repeatCount="indefinite"/>
+  </g>
+  <path d="M28 35c-12 20-12 52 0 72M132 35c12 20 12 52 0 72" fill="none" stroke="#25e6c8" stroke-width="2" stroke-linecap="round" opacity=".45">
+    <animate attributeName="stroke-opacity" values=".18;.6;.18" dur="1.5s" repeatCount="indefinite"/>
+  </path>
+</svg>

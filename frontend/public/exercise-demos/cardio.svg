@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 190" role="img" aria-label="유산소 운동 3D 데모">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="14%" r="78%"><stop offset="0" stop-color="#26373a"/><stop offset="1" stop-color="#101115"/></radialGradient>
+    <linearGradient id="body" x1="36" x2="118" y1="18" y2="168"><stop offset="0" stop-color="#f5f6f7"/><stop offset=".43" stop-color="#888e96"/><stop offset="1" stop-color="#33373d"/></linearGradient>
+    <linearGradient id="muscle" x1="0" x2="1"><stop offset="0" stop-color="#2af2d0"/><stop offset="1" stop-color="#0e9f8d"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="6" flood-color="#000" flood-opacity=".42"/></filter>
+  </defs>
+  <rect width="160" height="190" fill="url(#bg)"/>
+  <ellipse cx="80" cy="168" rx="46" ry="9" fill="#050607" opacity=".45"/>
+  <g filter="url(#shadow)">
+    <circle cx="80" cy="27" r="12" fill="url(#body)"/>
+    <path d="M65 43c-8 13-10 36-5 52 6 16 34 16 40 0 5-16 3-39-5-52-8 6-22 6-30 0Z" fill="url(#body)"/>
+    <path d="M62 55 34 92l9 8 25-28Zm38 0 27 37-9 8-25-28Z" fill="url(#body)"/>
+    <path d="M66 101 45 150h15l18-42Zm29 0 22 49h-15l-19-42Z" fill="url(#body)"/>
+  </g>
+  <g fill="url(#muscle)">
+    <path d="M64 58c9 6 23 6 32 0l3 19c-11 7-29 7-38 0Z"/>
+    <ellipse cx="65" cy="125" rx="9" ry="22"/>
+    <ellipse cx="96" cy="125" rx="9" ry="22"/>
+    <animate attributeName="opacity" values=".65;1;.65" dur=".9s" repeatCount="indefinite"/>
+  </g>
+  <path d="M24 64c-10 22-9 49 3 70M136 64c10 22 9 49-3 70" fill="none" stroke="#25e6c8" stroke-width="3" stroke-linecap="round" opacity=".5">
+    <animate attributeName="stroke-dasharray" values="2 16;14 6;2 16" dur=".9s" repeatCount="indefinite"/>
+  </path>
+</svg>

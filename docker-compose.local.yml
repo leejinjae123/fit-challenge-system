@@ -17,6 +17,11 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: local_password
       MYSQL_ROOT_HOST: "%"
+    ports: !override
+      - "3307:3306"
+
+  redis:
+    ports: !override []
 
   gateway-service:
     build:
@@ -69,6 +74,8 @@ services:
     build:
       context: ./frontend
     image: fit-challenge/frontend:local
+    ports: !override
+      - "3000:80"
 
   watchtower:
     profiles:

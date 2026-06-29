@@ -6,22 +6,19 @@ import '../../styles/layout.css';
 const Layout = () => {
   return (
     <div className="layout-container">
-      {/* Header - Fixed Top */}
       <header className="layout-header">
-        <h1 className="layout-title">Fitness Challenge</h1>
+        <h1 className="layout-title">Fit Challenge</h1>
+        <span className="layout-coach-pill">AI Coach</span>
       </header>
 
-      {/* Main Content - Scrollable Area */}
-      {/* Outlet renders the current page content */}
       <main className="layout-main">
         <Outlet />
       </main>
 
-      {/* Bottom Navigation - Fixed Bottom */}
       <nav className="layout-nav">
-        <NavItem to="/" icon="🏠" label="Home" />
-        <NavItem to="/stats" icon="📊" label="Stats" />
-        <NavItem to="/my" icon="👤" label="My" />
+        <NavItem to="/" icon="01" label="운동" />
+        <NavItem to="/stats" icon="02" label="분석" />
+        <NavItem to="/my" icon="03" label="내 정보" />
       </nav>
     </div>
   );

@@ -1,30 +1,30 @@
 -- Common Groups
-INSERT IGNORE INTO common_groups (group_code, group_name) VALUES ('LVL', '난이도');
-INSERT IGNORE INTO common_groups (group_code, group_name) VALUES ('CAT', '운동유형');
-INSERT IGNORE INTO common_groups (group_code, group_name) VALUES ('TGT', '자극부위');
+INSERT INTO common_groups (group_code, group_name) VALUES ('LVL', '난이도') ON DUPLICATE KEY UPDATE group_name = VALUES(group_name);
+INSERT INTO common_groups (group_code, group_name) VALUES ('CAT', '운동유형') ON DUPLICATE KEY UPDATE group_name = VALUES(group_name);
+INSERT INTO common_groups (group_code, group_name) VALUES ('TGT', '자극부위') ON DUPLICATE KEY UPDATE group_name = VALUES(group_name);
 
 -- Common Codes
 -- Level
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('L10', 'LVL', '초급', 1);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('L20', 'LVL', '중급', 2);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('L30', 'LVL', '상급', 3);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('L10', 'LVL', '초급', 1) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('L20', 'LVL', '중급', 2) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('L30', 'LVL', '상급', 3) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
 
 -- Category
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('C_MB', 'CAT', '모빌리티/스트레칭', 1);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('C_ST', 'CAT', '근력', 2);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('C_CD', 'CAT', '유산소', 3);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('C_MB', 'CAT', '모빌리티/스트레칭', 1) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('C_ST', 'CAT', '근력', 2) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('C_CD', 'CAT', '유산소', 3) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
 
 -- Target
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_WH', 'TGT', '전신', 1);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_LG', 'TGT', '하체', 2);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_SH', 'TGT', '어깨', 3);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_BK', 'TGT', '등', 4);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_CR', 'TGT', '코어/복부', 5);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_CH', 'TGT', '가슴', 6);
-INSERT IGNORE INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_AR', 'TGT', '팔', 7);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_WH', 'TGT', '전신', 1) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_LG', 'TGT', '하체', 2) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_SH', 'TGT', '어깨', 3) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_BK', 'TGT', '등', 4) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_CR', 'TGT', '코어/복부', 5) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_CH', 'TGT', '가슴', 6) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
+INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_AR', 'TGT', '팔', 7) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
 
 -- Exercises
-INSERT IGNORE INTO exercises (id, level_code, category_code, target_code, exercise_name, description, recommendation_score) VALUES 
+INSERT INTO exercises (id, level_code, category_code, target_code, exercise_name, description, recommendation_score) VALUES 
 (1, 'L10', 'C_MB', 'T_WH', '캣 카멜', '척추 분절 가동성 확보', 5),
 (2, 'L10', 'C_MB', 'T_LG', '피존 스트레칭', '이상근 및 고관절 이완', 5),
 (3, 'L10', 'C_MB', 'T_LG', '카프 스트레칭', '발목 가동성 및 종아리 유연성', 4),
@@ -84,6 +84,56 @@ INSERT IGNORE INTO exercises (id, level_code, category_code, target_code, exerci
 (57, 'L30', 'C_CD', 'T_WH', '로잉 머신 (스프린트)', '전신 파워 및 유산소 동시 공략', 5),
 (58, 'L30', 'C_CD', 'T_WH', '버피 테스트 (푸쉬업 포함)', '심박수 폭발 및 전신 컨디셔닝', 4),
 (59, 'L30', 'C_ST', 'T_CH', '덤벨 풀오버', '흉곽 확장 및 가슴/등 복합 자극', 3),
-(60, 'L30', 'C_ST', 'T_CR', '러시안 트위스트 (중량)', '외복사근 및 회전 파워', 4);
+(60, 'L30', 'C_ST', 'T_CR', '러시안 트위스트 (중량)', '외복사근 및 회전 파워', 4)
+ON DUPLICATE KEY UPDATE
+    level_code = VALUES(level_code),
+    category_code = VALUES(category_code),
+    target_code = VALUES(target_code),
+    exercise_name = VALUES(exercise_name),
+    description = VALUES(description),
+    recommendation_score = VALUES(recommendation_score);
 
-
+UPDATE exercises
+SET image_url = CONCAT(
+    'https://commons.wikimedia.org/wiki/Special:Redirect/file/',
+    CASE
+        WHEN id IN (1, 15) THEN 'Bent-knee-hip-raise-2.png'
+        WHEN id IN (2, 19) THEN 'Lunges-1.png'
+        WHEN id IN (3) THEN 'Calf-raises-1.png'
+        WHEN id IN (4, 13, 29) THEN 'Dumbbell-lateral-raises-2.png'
+        WHEN id IN (5, 7, 9) THEN 'Side-plank-1.png'
+        WHEN id IN (6, 21) THEN 'Squats-3-1-436x1024.png'
+        WHEN id IN (8, 58) THEN 'Push-ups-3-2.png'
+        WHEN id IN (10, 14) THEN 'Cable-seated-rows-2.png'
+        WHEN id IN (11) THEN 'Bent-knee-hip-raise-2.png'
+        WHEN id IN (12, 52) THEN 'Bent-over-cable-lateral-raises-2.png'
+        WHEN id IN (16, 17, 36) THEN 'Walking-lunges-2.png'
+        WHEN id IN (18, 37, 40, 56) THEN 'Step-ups-3-801x1024.png'
+        WHEN id IN (20, 59) THEN 'Dumbbell-bent-arm-pullover-2.png'
+        WHEN id IN (22) THEN 'Bench-press-2.png'
+        WHEN id IN (23, 47) THEN 'Barbell-rear-delt-row-2.png'
+        WHEN id IN (24) THEN 'Dumbbell-shoulder-press-2.png'
+        WHEN id IN (25, 42) THEN 'Close-grip-front-lat-pull-down-2.png'
+        WHEN id IN (26, 33) THEN 'Incline-chest-press-2.png'
+        WHEN id IN (27) THEN 'Leg-press-2-1024x670.png'
+        WHEN id IN (28) THEN 'Seated-leg-curl-2.png'
+        WHEN id IN (30) THEN 'Drag-curl-2.png'
+        WHEN id IN (31) THEN 'Decline-triceps-extension-2.png'
+        WHEN id IN (32, 41, 55) THEN 'Lying-squat-2-990x1024.png'
+        WHEN id IN (34, 57) THEN 'Cable-seated-rows-2.png'
+        WHEN id IN (35) THEN 'Barbell-upright-rows-2.png'
+        WHEN id IN (38, 53) THEN 'Bent-knee-hip-raise-2.png'
+        WHEN id IN (39) THEN 'Bent-knee-hip-raise-2.png'
+        WHEN id IN (43) THEN 'Rear-lunges-2-1-611x1024.png'
+        WHEN id IN (44) THEN 'Decline-triceps-extension-2.png'
+        WHEN id IN (45) THEN 'Cable-seated-rear-lateral-raise-2.png'
+        WHEN id IN (46) THEN 'Squat-to-bench-2-865x1024.png'
+        WHEN id IN (48) THEN 'Arnold-press-2.png'
+        WHEN id IN (49) THEN 'Flat-bench-cable-flys-2.png'
+        WHEN id IN (50) THEN 'T-bar-row-2.png'
+        WHEN id IN (51) THEN 'Hack-squat-2-2-768x1024.png'
+        WHEN id IN (54) THEN 'Drag-curl-2.png'
+        WHEN id IN (60) THEN 'Bent-knee-hip-raise-2.png'
+        ELSE 'Push-ups-3-2.png'
+    END
+);

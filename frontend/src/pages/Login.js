@@ -9,8 +9,8 @@ const Login = () => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setCredentials(prev => ({ ...prev, [name]: value }));
   };
 
@@ -18,7 +18,6 @@ const Login = () => {
     setError('');
     try {
       await AuthService.login(credentials.email, credentials.password);
-      alert('로그인 성공!');
       navigate('/');
     } catch (err) {
       console.error('Login failed', err);
@@ -30,41 +29,50 @@ const Login = () => {
     <div className="login-container">
       <div className="login-header">
         <h1 className="app-title">Fit Challenge</h1>
-        <p className="app-subtitle">AI 홈트레이닝 & 챌린지</p>
+        <p className="app-subtitle">AI 루틴 추천과 운동 기록을 한 화면에서 관리하세요.</p>
       </div>
 
       <div className="login-form">
-        <input 
-          type="email" 
+        <input
+          type="email"
           name="email"
           className="text-input"
           placeholder="이메일"
           value={credentials.email}
           onChange={handleChange}
         />
-        <input 
-          type="password" 
+        <input
+          type="password"
           name="password"
           className="text-input"
           placeholder="비밀번호"
           value={credentials.password}
           onChange={handleChange}
         />
-        {error && <p style={{ color: 'red', fontSize: '14px' }}>{error}</p>}
-        
-        <Button onClick={handleLogin} style={{ marginTop: '20px' }}>
+        {error && <p style={styles.errorText}>{error}</p>}
+
+        <Button onClick={handleLogin} style={{ marginTop: '10px' }}>
           로그인
         </Button>
       </div>
 
       <div className="login-footer">
-        <p>계정이 없으신가요?</p>
+        <p style={{ margin: '0 0 8px' }}>처음이라면</p>
         <button className="link-btn" onClick={() => navigate('/onboarding')}>
-          회원가입 및 온보딩 시작
+          프로필 만들기
         </button>
       </div>
     </div>
   );
+};
+
+const styles = {
+  errorText: {
+    margin: '0',
+    color: '#ff7b7b',
+    fontSize: '13px',
+    fontWeight: '700',
+  }
 };
 
 export default Login;
