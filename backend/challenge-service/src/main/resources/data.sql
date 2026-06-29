@@ -24,116 +24,74 @@ INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_C
 INSERT INTO common_codes (code_id, group_code, code_nm, sort_order) VALUES ('T_AR', 'TGT', '팔', 7) ON DUPLICATE KEY UPDATE code_nm = VALUES(code_nm), sort_order = VALUES(sort_order);
 
 -- Exercises
-INSERT INTO exercises (id, level_code, category_code, target_code, exercise_name, description, recommendation_score) VALUES 
-(1, 'L10', 'C_MB', 'T_WH', '캣 카멜', '척추 분절 가동성 확보', 5),
-(2, 'L10', 'C_MB', 'T_LG', '피존 스트레칭', '이상근 및 고관절 이완', 5),
-(3, 'L10', 'C_MB', 'T_LG', '카프 스트레칭', '발목 가동성 및 종아리 유연성', 4),
-(4, 'L10', 'C_MB', 'T_SH', '암 서클', '어깨 충돌 방지 및 회전근개 활성화', 5),
-(5, 'L10', 'C_MB', 'T_BK', '오픈 북 스트레칭', '흉추 회전 가동성 증진', 5),
-(6, 'L10', 'C_ST', 'T_LG', '맨몸 스쿼트', '하체 움직임 패턴 학습', 5),
-(7, 'L10', 'C_ST', 'T_CR', '데드버그', '복부 심부 코어 강화', 5),
-(8, 'L10', 'C_ST', 'T_CH', '니 푸쉬업', '상체 밀기 기초 근력', 4),
-(9, 'L10', 'C_ST', 'T_CR', '플랭크', '전신 안정성 및 버티는 힘', 5),
-(10, 'L10', 'C_ST', 'T_BK', '버드 독', '후면 사슬과 코어 협응력', 4),
-(11, 'L10', 'C_ST', 'T_LG', '힙 브릿지', '둔근 활성화 및 골반 교정', 5),
-(12, 'L10', 'C_ST', 'T_SH', 'Y-레이즈', '하부 승모근 및 견갑 안정화', 4),
-(13, 'L10', 'C_MB', 'T_SH', '벽 가슴 스트레칭', '굽은 등 펴기 및 대흉근 이완', 4),
-(14, 'L10', 'C_ST', 'T_BK', '인버티드 로우', '자기 체중을 이용한 기초 등 운동', 4),
-(15, 'L10', 'C_MB', 'T_WH', '차일드 포즈', '등 하부 및 어깨 휴식/이완', 3),
-(16, 'L10', 'C_CD', 'T_WH', '패스트 워킹', '심폐 지구력 기초 쌓기', 5),
-(17, 'L10', 'C_CD', 'T_WH', '슬로우 조깅', '관절 무리 없는 유산소 적응', 4),
-(18, 'L10', 'C_CD', 'T_WH', '고정 사이클', '하체 혈류 개선 및 기초 대사', 3),
-(19, 'L10', 'C_ST', 'T_LG', '스플릿 스쿼트 기초', '하체 밸런스 및 발바닥 접지력', 4),
-(20, 'L10', 'C_MB', 'T_LG', '코브라 스트레칭', '복부 이완 및 척추 신전', 3),
-(21, 'L20', 'C_ST', 'T_LG', '바벨 백 스쿼트', '하체 전체 근질량 증가', 5),
-(22, 'L20', 'C_ST', 'T_CH', '벤치 프레스', '가슴 근육 두께 형성', 5),
-(23, 'L20', 'C_ST', 'T_BK', '바벨 로우', '등 근육 전체 볼륨', 5),
-(24, 'L20', 'C_ST', 'T_SH', '오버헤드 프레스', '어깨 전체 프레임 확장', 5),
-(25, 'L20', 'C_ST', 'T_BK', '렛풀다운', '광배근 너비 및 V-테이퍼', 5),
-(26, 'L20', 'C_ST', 'T_CH', '덤벨 벤치 프레스', '가슴 근육 가동범위 및 균형', 4),
-(27, 'L20', 'C_ST', 'T_LG', '레그 프레스', '허리 부담 적은 하체 고강도 훈련', 4),
-(28, 'L20', 'C_ST', 'T_LG', '레그 컬', '햄스트링 고립 발달', 5),
-(29, 'L20', 'C_ST', 'T_SH', '사이드 레터럴 레이즈', '측면 삼각근 볼륨 형성', 5),
-(30, 'L20', 'C_ST', 'T_AR', '바벨 컬', '상완이두근 크기 증대', 4),
-(31, 'L20', 'C_ST', 'T_AR', '트라이셉스 푸쉬다운', '상완삼두근 선명도', 4),
-(32, 'L20', 'C_ST', 'T_LG', '루마니안 데드리프트', '후면 사슬 전체 근비대', 5),
-(33, 'L20', 'C_ST', 'T_CH', '인클라인 덤벨 프레스', '상부 가슴 집중 발달', 4),
-(34, 'L20', 'C_ST', 'T_BK', '시티드 로우', '등 중앙부 두께감 및 견갑 수축', 4),
-(35, 'L20', 'C_ST', 'T_SH', '업라이트 로우', '측면 어깨 및 상부 승모근', 3),
-(36, 'L20', 'C_CD', 'T_WH', '인터벌 러닝', '강도 높은 지방 연소', 5),
-(37, 'L20', 'C_CD', 'T_WH', '일립티컬', '전신 유산소 및 관절 보호', 4),
-(38, 'L20', 'C_ST', 'T_CR', '행잉 레그 레이즈', '복근 하부 강도 증대', 5),
-(39, 'L20', 'C_ST', 'T_CR', '케이블 크런치', '복근의 입체감 형성', 4),
-(40, 'L20', 'C_CD', 'T_WH', '줄넘기', '민첩성 및 기초 체력 강화', 3),
-(41, 'L30', 'C_ST', 'T_WH', '컨벤셔널 데드리프트', '전신 협응력 및 고중량 스트렝스', 5),
-(42, 'L30', 'C_ST', 'T_BK', '중량 풀업', '광배근 한계 돌파', 5),
-(43, 'L30', 'C_ST', 'T_LG', '불가리안 스플릿 스쿼트', '둔근 및 하체 편측 고립', 5),
-(44, 'L30', 'C_ST', 'T_CH', '중량 딥스', '아랫 가슴 및 삼두 고중량', 5),
-(45, 'L30', 'C_ST', 'T_SH', '페이스 풀', '후면 삼각근 및 상체 자세 교정', 5),
-(46, 'L30', 'C_ST', 'T_LG', '프론트 스쿼트', '대퇴사두 전면부 타겟 및 코어', 4),
-(47, 'L30', 'C_ST', 'T_BK', '원 암 덤벨 로우', '등 근육 가동범위 끝까지 수축', 4),
-(48, 'L30', 'C_ST', 'T_SH', '아놀드 프레스', '어깨 삼각근 전체의 회전 자극', 4),
-(49, 'L30', 'C_ST', 'T_CH', '케이블 크로스 오버', '가슴 안쪽 및 하부 분리도', 4),
-(50, 'L30', 'C_ST', 'T_BK', 'T-바 로우', '등 중앙 승모근 두께 극대화', 4),
-(51, 'L30', 'C_ST', 'T_LG', '핵 스쿼트', '하체 바깥쪽 근육 선명도', 4),
-(52, 'L30', 'C_ST', 'T_SH', '벤트오버 레터럴 레이즈', '후면 어깨 독립 고립', 5),
-(53, 'L30', 'C_ST', 'T_CR', '드래곤 플래그', '복부 코어의 정점 훈련', 5),
-(54, 'L30', 'C_ST', 'T_AR', '해머 컬 (드롭셋)', '전완근 및 이두 볼륨 극대화', 3),
-(55, 'L30', 'C_ST', 'T_LG', '스티프 레그 데드리프트', '햄스트링 극한의 이완 유도', 4),
-(56, 'L30', 'C_CD', 'T_WH', '천국의 계단 (스텝밀)', '고강도 하체 유산소 챌린지', 5),
-(57, 'L30', 'C_CD', 'T_WH', '로잉 머신 (스프린트)', '전신 파워 및 유산소 동시 공략', 5),
-(58, 'L30', 'C_CD', 'T_WH', '버피 테스트 (푸쉬업 포함)', '심박수 폭발 및 전신 컨디셔닝', 4),
-(59, 'L30', 'C_ST', 'T_CH', '덤벨 풀오버', '흉곽 확장 및 가슴/등 복합 자극', 3),
-(60, 'L30', 'C_ST', 'T_CR', '러시안 트위스트 (중량)', '외복사근 및 회전 파워', 4)
+SET @exercise_image_base = 'https://commons.wikimedia.org/wiki/Special:Redirect/file/';
+
+INSERT INTO exercises (id, level_code, category_code, target_code, exercise_name, description, recommendation_score, image_url) VALUES
+(1, 'L10', 'C_ST', 'T_CH', '푸쉬업', '가슴과 삼두, 코어를 함께 쓰는 기본 상체 밀기 운동', 5, CONCAT(@exercise_image_base, 'Push-ups-3-2.png')),
+(2, 'L10', 'C_ST', 'T_LG', '박스 스쿼트', '벤치 높이를 기준으로 앉았다 일어나며 스쿼트 자세를 익히는 운동', 5, CONCAT(@exercise_image_base, 'Squat-to-bench-2-865x1024.png')),
+(3, 'L10', 'C_ST', 'T_LG', '런지', '한 발씩 내딛으며 둔근과 대퇴사두근의 균형을 기르는 운동', 5, CONCAT(@exercise_image_base, 'Lunges-2.png')),
+(4, 'L10', 'C_CD', 'T_LG', '스텝 업', '높은 발판에 올라서며 하체 근력과 심폐 지구력을 함께 쓰는 운동', 4, CONCAT(@exercise_image_base, 'Step-ups-3-801x1024.png')),
+(5, 'L10', 'C_ST', 'T_LG', '스탠딩 카프 레이즈', '발뒤꿈치를 들어 올려 종아리 근육을 수축하는 운동', 4, CONCAT(@exercise_image_base, 'Calf-raises-2.png')),
+(6, 'L10', 'C_ST', 'T_CR', '사이드 플랭크', '옆으로 버티며 복사근과 측면 코어 안정성을 강화하는 운동', 5, CONCAT(@exercise_image_base, 'Side-plank-2.png')),
+(7, 'L10', 'C_ST', 'T_CR', '벤트 니 힙 레이즈', '무릎을 굽힌 채 골반을 말아 올려 하복부를 자극하는 운동', 4, CONCAT(@exercise_image_base, 'Bent-knee-hip-raise-2.png')),
+(8, 'L10', 'C_ST', 'T_BK', '슈퍼맨', '엎드린 자세에서 팔다리를 들어 척추기립근과 둔근을 쓰는 운동', 4, CONCAT(@exercise_image_base, 'Supermans-2.png')),
+(9, 'L10', 'C_ST', 'T_BK', '짐볼 백 익스텐션', '짐볼 위에서 상체를 들어 허리 뒤쪽 근육을 강화하는 운동', 4, CONCAT(@exercise_image_base, 'Back-extension-on-stability-ball-2.png')),
+(10, 'L10', 'C_ST', 'T_SH', '덤벨 레터럴 레이즈', '덤벨을 옆으로 들어 측면 삼각근을 자극하는 어깨 운동', 5, CONCAT(@exercise_image_base, 'Dumbbell-lateral-raises-2.png')),
+(11, 'L10', 'C_ST', 'T_SH', '덤벨 프론트 레이즈', '덤벨을 앞으로 들어 전면 삼각근을 강화하는 운동', 4, CONCAT(@exercise_image_base, 'Dumbbell-front-raises-2.png')),
+(12, 'L10', 'C_ST', 'T_SH', '덤벨 숄더 프레스', '덤벨을 머리 위로 밀어 어깨 전반과 삼두를 쓰는 운동', 5, CONCAT(@exercise_image_base, 'Dumbbell-shoulder-press-2.png')),
+(13, 'L10', 'C_ST', 'T_BK', '시티드 케이블 로우', '케이블을 몸쪽으로 당겨 등 중앙과 광배근을 수축하는 운동', 5, CONCAT(@exercise_image_base, 'Cable-seated-rows-2.png')),
+(14, 'L10', 'C_ST', 'T_BK', '클로즈 그립 랫풀다운', '좁은 그립으로 바를 당겨 광배근 아래쪽을 자극하는 운동', 4, CONCAT(@exercise_image_base, 'Close-grip-front-lat-pull-down-2.png')),
+(15, 'L10', 'C_ST', 'T_LG', '레그 익스텐션', '무릎을 펴며 대퇴사두근을 고립해서 강화하는 머신 운동', 4, CONCAT(@exercise_image_base, 'Leg-extensions-2-672x1024.png')),
+(16, 'L10', 'C_ST', 'T_LG', '시티드 레그 컬', '앉은 자세에서 무릎을 굽혀 햄스트링을 자극하는 운동', 4, CONCAT(@exercise_image_base, 'Seated-leg-curl-2.png')),
+(17, 'L10', 'C_ST', 'T_LG', '레그 프레스', '발판을 밀어 하체 전반을 안정적으로 강화하는 머신 운동', 5, CONCAT(@exercise_image_base, 'Leg-press-2-1024x670.png')),
+(18, 'L10', 'C_ST', 'T_AR', '드래그 컬', '바를 몸에 가깝게 끌어 올려 이두근을 집중 자극하는 운동', 3, CONCAT(@exercise_image_base, 'Drag-curl-2.png')),
+(19, 'L10', 'C_ST', 'T_AR', '라잉 트라이셉스 익스텐션', '누운 자세에서 팔꿈치를 펴 삼두근을 고립하는 운동', 3, CONCAT(@exercise_image_base, 'Decline-triceps-extension-2.png')),
+(20, 'L10', 'C_ST', 'T_CH', '펙덱 플라이', '머신 손잡이를 모아 가슴 안쪽 수축감을 익히는 운동', 4, CONCAT(@exercise_image_base, 'Butterfly-machine-2.png')),
+(21, 'L20', 'C_ST', 'T_CH', '벤치 프레스', '바벨을 가슴 위에서 밀어 대흉근과 삼두를 강화하는 대표 운동', 5, CONCAT(@exercise_image_base, 'Bench-press-2.png')),
+(22, 'L20', 'C_ST', 'T_CH', '인클라인 체스트 프레스', '기울어진 벤치 각도로 상부 가슴을 집중 자극하는 운동', 5, CONCAT(@exercise_image_base, 'Incline-chest-press-2.png')),
+(23, 'L20', 'C_ST', 'T_CH', '해머 그립 인클라인 프레스', '중립 그립으로 상부 가슴과 전면 어깨를 함께 쓰는 프레스', 4, CONCAT(@exercise_image_base, 'Hammer-grip-incline-bench-press-2.png')),
+(24, 'L20', 'C_ST', 'T_CH', '덤벨 플라이', '팔을 벌렸다 모아 가슴의 신장과 수축을 만드는 운동', 4, CONCAT(@exercise_image_base, 'Dumbbell-flys-2.png')),
+(25, 'L20', 'C_ST', 'T_CH', '케이블 크로스오버', '양쪽 케이블을 모아 가슴 안쪽과 하부 라인을 자극하는 운동', 4, CONCAT(@exercise_image_base, 'Cable-crossover-2.png')),
+(26, 'L20', 'C_ST', 'T_BK', '바벨 리어 델트 로우', '상체를 숙여 바벨을 당기며 등과 후면 어깨를 강화하는 운동', 5, CONCAT(@exercise_image_base, 'Barbell-rear-delt-row-2.png')),
+(27, 'L20', 'C_ST', 'T_BK', 'T바 로우', '몸통을 고정하고 바를 당겨 등 중앙 두께를 만드는 운동', 5, CONCAT(@exercise_image_base, 'T-bar-row-2.png')),
+(28, 'L20', 'C_ST', 'T_BK', 'V바 랫풀다운', 'V바를 가슴 쪽으로 당겨 광배근 수축을 익히는 운동', 5, CONCAT(@exercise_image_base, 'V-bar-pull-down-2.png')),
+(29, 'L20', 'C_ST', 'T_BK', '언더핸드 풀다운', '손바닥이 몸을 향한 그립으로 광배근 하부를 자극하는 운동', 4, CONCAT(@exercise_image_base, 'Underhand-pull-downs-2.png')),
+(30, 'L20', 'C_ST', 'T_SH', '바벨 업라이트 로우', '바벨을 몸 가까이 끌어 올려 측면 어깨와 승모근을 쓰는 운동', 4, CONCAT(@exercise_image_base, 'Barbell-upright-rows-2.png')),
+(31, 'L20', 'C_ST', 'T_SH', '아놀드 프레스', '회전 동작을 포함해 어깨 전면과 측면을 함께 자극하는 프레스', 4, CONCAT(@exercise_image_base, 'Arnold-press-2.png')),
+(32, 'L20', 'C_ST', 'T_SH', '시티드 밀리터리 프레스', '앉은 자세에서 중량을 머리 위로 밀어 어깨 힘을 키우는 운동', 5, CONCAT(@exercise_image_base, 'Seated-military-shoulder-press-2.png')),
+(33, 'L20', 'C_ST', 'T_SH', '바벨 프론트 레이즈', '바벨을 앞으로 들어 전면 삼각근을 집중 자극하는 운동', 3, CONCAT(@exercise_image_base, 'Barbell-front-raises-2.png')),
+(34, 'L20', 'C_ST', 'T_LG', '핵 스쿼트', '고정된 궤도에서 대퇴사두근과 둔근을 강하게 쓰는 운동', 5, CONCAT(@exercise_image_base, 'Hack-squat-2-2-768x1024.png')),
+(35, 'L20', 'C_ST', 'T_LG', '내로우 스탠스 레그 프레스', '좁은 발 간격으로 허벅지 앞쪽 자극을 높이는 레그 프레스', 4, CONCAT(@exercise_image_base, 'Narrow-stance-leg-press-2-1024x671.png')),
+(36, 'L20', 'C_ST', 'T_LG', '스탠딩 레그 컬', '서서 한쪽 무릎을 굽혀 햄스트링을 고립하는 운동', 4, CONCAT(@exercise_image_base, 'Standing-leg-curl-2.png')),
+(37, 'L20', 'C_ST', 'T_LG', '동키 카프 레이즈', '상체를 숙인 자세에서 종아리 수축 범위를 크게 쓰는 운동', 4, CONCAT(@exercise_image_base, 'Donkey-calf-raises-2.png')),
+(38, 'L20', 'C_ST', 'T_AR', '크로스 바디 해머 컬', '덤벨을 반대쪽 어깨 방향으로 들어 전완과 상완요골근을 강화하는 운동', 4, CONCAT(@exercise_image_base, 'Cross-body-hammer-curl-2.png')),
+(39, 'L20', 'C_ST', 'T_AR', '디클라인 EZ바 트라이셉스 익스텐션', '기울어진 벤치에서 삼두 장두를 길게 늘려 자극하는 운동', 4, CONCAT(@exercise_image_base, 'Decline-ez-bar-triceps-extension-2.png')),
+(40, 'L20', 'C_ST', 'T_CR', '니링 앱 롤아웃', '무릎을 대고 롤러를 밀어 복부와 전신 코어를 강화하는 운동', 5, CONCAT(@exercise_image_base, 'Ab-rollout-on-knees-2.png')),
+(41, 'L30', 'C_ST', 'T_CH', '인클라인 프레스', '상부 가슴에 높은 부하를 주는 고강도 프레스 운동', 5, CONCAT(@exercise_image_base, 'Incline-press-2.png')),
+(42, 'L30', 'C_ST', 'T_CH', '내로우 그립 벤치 프레스', '좁은 그립으로 가슴 안쪽과 삼두 부하를 높이는 벤치 프레스', 4, CONCAT(@exercise_image_base, 'Narrow-grip-bench-press-2.png')),
+(43, 'L30', 'C_ST', 'T_CH', '원암 벤치 프레스', '한쪽 팔로 중량을 밀어 가슴과 코어 안정성을 함께 요구하는 운동', 4, CONCAT(@exercise_image_base, 'One-arm-bench-press-2.png')),
+(44, 'L30', 'C_ST', 'T_CH', '원암 플로어 프레스', '바닥에서 한쪽 팔로 눌러 가슴과 삼두의 잠금 힘을 기르는 운동', 4, CONCAT(@exercise_image_base, 'One-arm-floor-press-2.png')),
+(45, 'L30', 'C_ST', 'T_CH', '와이드 그립 디클라인 풀오버', '가슴과 광배근을 동시에 늘리고 수축하는 고난도 풀오버', 4, CONCAT(@exercise_image_base, 'Wide-grip-decline-pullover-2.png')),
+(46, 'L30', 'C_ST', 'T_BK', '리버스 그립 벤트오버 로우', '언더그립으로 바벨을 당겨 광배근과 등 중앙을 강화하는 운동', 5, CONCAT(@exercise_image_base, 'Reverse-grip-bent-over-rows-2.png')),
+(47, 'L30', 'C_ST', 'T_BK', '내로우 패러럴 그립 친업', '좁은 중립 그립으로 몸을 끌어올려 광배근과 이두를 쓰는 운동', 5, CONCAT(@exercise_image_base, 'Narrow-parallel-grip-chin-ups-2.png')),
+(48, 'L30', 'C_ST', 'T_BK', '스트레이트 암 푸쉬다운', '팔을 편 상태로 케이블을 내려 광배근 수축을 고립하는 운동', 4, CONCAT(@exercise_image_base, 'Straight-arm-push-down-2.png')),
+(49, 'L30', 'C_ST', 'T_SH', '헤드 서포트 리어 델트 로우', '벤치에 머리를 지지하고 후면 어깨와 등 상부를 당기는 운동', 4, CONCAT(@exercise_image_base, 'Bent-over-rear-delt-row-with-head-on-bench-2.png')),
+(50, 'L30', 'C_ST', 'T_SH', '쿠반 프레스', '외회전과 프레스를 결합해 회전근개와 어깨 안정성을 높이는 운동', 4, CONCAT(@exercise_image_base, 'Cuban-press-2.png')),
+(51, 'L30', 'C_ST', 'T_LG', '핵 스쿼트 고중량', '고정 궤도에서 깊게 내려가 대퇴사두근을 강하게 자극하는 운동', 5, CONCAT(@exercise_image_base, 'Hack-squat-2-856x1024.png')),
+(52, 'L30', 'C_ST', 'T_LG', '제퍼슨 스쿼트', '바벨을 다리 사이에 두고 들어 올려 하체와 코어를 함께 쓰는 운동', 4, CONCAT(@exercise_image_base, 'Jefferson-squats-2-413x1024.png')),
+(53, 'L30', 'C_ST', 'T_LG', '싱글 레그 스쿼트', '한쪽 다리로 앉았다 일어나며 균형과 하체 힘을 요구하는 운동', 5, CONCAT(@exercise_image_base, 'Single-leg-squat-2-877x1024.png')),
+(54, 'L30', 'C_ST', 'T_LG', '사이드 스플릿 스쿼트', '옆으로 넓게 벌린 자세에서 내전근과 둔근을 강화하는 운동', 4, CONCAT(@exercise_image_base, 'Side-split-squats-2-1024x600.png')),
+(55, 'L30', 'C_ST', 'T_LG', '굿모닝', '상체를 숙였다 펴며 햄스트링과 척추기립근을 강화하는 운동', 4, CONCAT(@exercise_image_base, 'Good-mornings-2.png')),
+(56, 'L30', 'C_ST', 'T_LG', '라잉 스쿼트', '누운 머신 자세에서 발판을 밀어 하체를 강하게 쓰는 운동', 4, CONCAT(@exercise_image_base, 'Lying-squat-2-990x1024.png')),
+(57, 'L30', 'C_ST', 'T_CR', '앱 롤아웃', '롤러를 멀리 밀었다 당기며 복부와 광배, 전신 안정성을 요구하는 운동', 5, CONCAT(@exercise_image_base, 'Ab-rollout-2.png')),
+(58, 'L30', 'C_CD', 'T_CR', '플러터 킥', '다리를 교차로 차며 하복부와 고관절 굴곡근을 지속적으로 쓰는 운동', 4, CONCAT(@exercise_image_base, 'Flutter-kicks-2.png')),
+(59, 'L30', 'C_ST', 'T_CR', '레그 레이즈', '다리를 들어 올려 하복부와 골반 후방 경사를 강화하는 운동', 4, CONCAT(@exercise_image_base, 'Leg-raises-2.png')),
+(60, 'L30', 'C_ST', 'T_CR', '포인트 드로잉 인', '네발기기 자세에서 복부를 당겨 깊은 코어 안정성을 훈련하는 운동', 3, CONCAT(@exercise_image_base, 'Abdominal-4-point-drawing-in-2.png'))
 ON DUPLICATE KEY UPDATE
     level_code = VALUES(level_code),
     category_code = VALUES(category_code),
     target_code = VALUES(target_code),
     exercise_name = VALUES(exercise_name),
     description = VALUES(description),
-    recommendation_score = VALUES(recommendation_score);
-
-UPDATE exercises
-SET image_url = CONCAT(
-    'https://commons.wikimedia.org/wiki/Special:Redirect/file/',
-    CASE
-        WHEN id IN (1, 15) THEN 'Bent-knee-hip-raise-2.png'
-        WHEN id IN (2, 19) THEN 'Lunges-1.png'
-        WHEN id IN (3) THEN 'Calf-raises-1.png'
-        WHEN id IN (4, 13, 29) THEN 'Dumbbell-lateral-raises-2.png'
-        WHEN id IN (5, 7, 9) THEN 'Side-plank-1.png'
-        WHEN id IN (6, 21) THEN 'Squats-3-1-436x1024.png'
-        WHEN id IN (8, 58) THEN 'Push-ups-3-2.png'
-        WHEN id IN (10, 14) THEN 'Cable-seated-rows-2.png'
-        WHEN id IN (11) THEN 'Bent-knee-hip-raise-2.png'
-        WHEN id IN (12, 52) THEN 'Bent-over-cable-lateral-raises-2.png'
-        WHEN id IN (16, 17, 36) THEN 'Walking-lunges-2.png'
-        WHEN id IN (18, 37, 40, 56) THEN 'Step-ups-3-801x1024.png'
-        WHEN id IN (20, 59) THEN 'Dumbbell-bent-arm-pullover-2.png'
-        WHEN id IN (22) THEN 'Bench-press-2.png'
-        WHEN id IN (23, 47) THEN 'Barbell-rear-delt-row-2.png'
-        WHEN id IN (24) THEN 'Dumbbell-shoulder-press-2.png'
-        WHEN id IN (25, 42) THEN 'Close-grip-front-lat-pull-down-2.png'
-        WHEN id IN (26, 33) THEN 'Incline-chest-press-2.png'
-        WHEN id IN (27) THEN 'Leg-press-2-1024x670.png'
-        WHEN id IN (28) THEN 'Seated-leg-curl-2.png'
-        WHEN id IN (30) THEN 'Drag-curl-2.png'
-        WHEN id IN (31) THEN 'Decline-triceps-extension-2.png'
-        WHEN id IN (32, 41, 55) THEN 'Lying-squat-2-990x1024.png'
-        WHEN id IN (34, 57) THEN 'Cable-seated-rows-2.png'
-        WHEN id IN (35) THEN 'Barbell-upright-rows-2.png'
-        WHEN id IN (38, 53) THEN 'Bent-knee-hip-raise-2.png'
-        WHEN id IN (39) THEN 'Bent-knee-hip-raise-2.png'
-        WHEN id IN (43) THEN 'Rear-lunges-2-1-611x1024.png'
-        WHEN id IN (44) THEN 'Decline-triceps-extension-2.png'
-        WHEN id IN (45) THEN 'Cable-seated-rear-lateral-raise-2.png'
-        WHEN id IN (46) THEN 'Squat-to-bench-2-865x1024.png'
-        WHEN id IN (48) THEN 'Arnold-press-2.png'
-        WHEN id IN (49) THEN 'Flat-bench-cable-flys-2.png'
-        WHEN id IN (50) THEN 'T-bar-row-2.png'
-        WHEN id IN (51) THEN 'Hack-squat-2-2-768x1024.png'
-        WHEN id IN (54) THEN 'Drag-curl-2.png'
-        WHEN id IN (60) THEN 'Bent-knee-hip-raise-2.png'
-        ELSE 'Push-ups-3-2.png'
-    END
-);
+    recommendation_score = VALUES(recommendation_score),
+    image_url = VALUES(image_url);
