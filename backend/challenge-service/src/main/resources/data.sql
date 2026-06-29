@@ -95,3 +95,16 @@ ON DUPLICATE KEY UPDATE
     description = VALUES(description),
     recommendation_score = VALUES(recommendation_score),
     image_url = VALUES(image_url);
+
+INSERT INTO challenges (id, active, capacity, description, participant_count, reward_points, target_type, target_value, title) VALUES
+    (1, TRUE, 100, '완료한 운동 기록 3개를 달성하면 보상을 받을 수 있습니다.', 0, 100, 'WORKOUT_COUNT', 3, '첫 루틴 완주'),
+    (2, TRUE, 80, '오늘 기록의 성공률이 80% 이상이면 완료할 수 있습니다.', 0, 150, 'SUCCESS_RATE', 80, '꾸준함 80%'),
+    (3, TRUE, 60, '완료한 운동 기록 7개를 쌓아 주간 루틴을 완성하세요.', 0, 250, 'WORKOUT_COUNT', 7, '주간 운동 챌린지')
+ON DUPLICATE KEY UPDATE
+    active = VALUES(active),
+    capacity = VALUES(capacity),
+    description = VALUES(description),
+    reward_points = VALUES(reward_points),
+    target_type = VALUES(target_type),
+    target_value = VALUES(target_value),
+    title = VALUES(title);

@@ -123,6 +123,7 @@ const MyPage = () => {
             <MetricItem label="몸무게" value={`${userInfo.weight} kg`} />
             <MetricItem label="레벨" value={getLevelLabel(userInfo.levelCode)} />
             <MetricItem label="주간 목표" value={`${userInfo.weeklyGoal}회`} />
+            <MetricItem label="포인트" value={`${userInfo.points || 0}P`} />
           </div>
         </Card>
       )}

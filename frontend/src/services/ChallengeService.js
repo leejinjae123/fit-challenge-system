@@ -121,6 +121,45 @@ class ChallengeService {
       throw error;
     }
   }
+
+  async getChallenges(userId) {
+    try {
+      const config = {};
+      if (userId) {
+        config.headers = { 'X-User-Id': userId };
+      }
+      return await apiClient.get(ENDPOINTS.CHALLENGE.LIST, config);
+    } catch (error) {
+      console.error('Failed to fetch challenges:', error);
+      throw error;
+    }
+  }
+
+  async joinChallenge(challengeId, userId) {
+    try {
+      const config = {};
+      if (userId) {
+        config.headers = { 'X-User-Id': userId };
+      }
+      return await apiClient.post(ENDPOINTS.CHALLENGE.JOIN(challengeId), {}, config);
+    } catch (error) {
+      console.error('Failed to join challenge:', error);
+      throw error;
+    }
+  }
+
+  async completeChallenge(challengeId, userId) {
+    try {
+      const config = {};
+      if (userId) {
+        config.headers = { 'X-User-Id': userId };
+      }
+      return await apiClient.post(ENDPOINTS.CHALLENGE.COMPLETE(challengeId), {}, config);
+    } catch (error) {
+      console.error('Failed to complete challenge:', error);
+      throw error;
+    }
+  }
 }
 
 const challengeServiceInstance = new ChallengeService();

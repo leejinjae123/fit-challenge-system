@@ -11,5 +11,6 @@ public interface WorkoutRecordRepository extends JpaRepository<WorkoutRecord, Lo
     List<WorkoutRecord> findByUserIdOrderByPerformedAtDesc(Long userId);
     List<WorkoutRecord> findByUserIdAndPlanDate(Long userId, LocalDate planDate);
     List<WorkoutRecord> findByUserIdAndStatusAndPerformedAtAfter(Long userId, RecordStatus status, LocalDateTime performedAt);
+    long countByUserIdAndStatus(Long userId, RecordStatus status);
 }
 

@@ -17,8 +17,9 @@ const Layout = () => {
 
       <nav className="layout-nav">
         <NavItem to="/" icon="01" label="운동" />
-        <NavItem to="/stats" icon="02" label="분석" />
-        <NavItem to="/my" icon="03" label="내 정보" />
+        <NavItem to="/challenges" icon="02" label="챌린지" />
+        <NavItem to="/stats" icon="03" label="분석" />
+        <NavItem to="/my" icon="04" label="내 정보" />
       </nav>
     </div>
   );

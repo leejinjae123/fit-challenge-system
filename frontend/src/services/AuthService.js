@@ -37,6 +37,15 @@ class AuthService {
       throw error;
     }
   }
+
+  async chargePoints(amount) {
+    try {
+      const response = await apiClient.post('/users/me/points', {}, { params: { amount } });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 const authServiceInstance = new AuthService();

@@ -15,6 +15,7 @@ export const ENDPOINTS = {
     LIST: '/challenges',
     DETAIL: (id) => `/challenges/${id}`,
     JOIN: (id) => `/challenges/${id}/join`,
+    COMPLETE: (id) => `/challenges/${id}/complete`,
   },
   WORKOUT: {
     RECORDS: '/workout-records',

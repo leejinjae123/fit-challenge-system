@@ -5,6 +5,7 @@ import com.fit.auth.dto.OnboardingRequestDto;
 import com.fit.auth.dto.UserResponseDto;
 import com.fit.auth.dto.UserUpdateRequestDto;
 import com.fit.auth.service.AuthService;
+import com.fit.auth.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final PointService pointService;
 
     // 회원가입 (온보딩)
     @PostMapping("/users/onboarding")
@@ -55,5 +57,13 @@ public class AuthController {
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId) {
         UserResponseDto response = authService.getMyInfo(userId);
         return ResponseEntity.ok(response.getIsOnboarded());
+    }
+
+    @PostMapping("/users/me/points")
+    public ResponseEntity<UserResponseDto> chargePoints(
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestParam("amount") Long amount) {
+        pointService.chargePoints(userId, amount);
+        return ResponseEntity.ok(authService.getMyInfo(userId));
     }
 }

@@ -9,5 +9,6 @@ import java.time.LocalDate;
 public interface UserWorkoutRepository extends JpaRepository<UserWorkout, Long> {
     List<UserWorkout> findByUserIdOrderByCreatedAtAsc(Long userId);
     Optional<UserWorkout> findByUserIdAndCreatedAt(Long userId, LocalDate createdAt);
+    Optional<UserWorkout> findTopByUserIdOrderByCreatedAtDesc(Long userId);
 }
 

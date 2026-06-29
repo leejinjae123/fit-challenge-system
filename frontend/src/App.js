@@ -4,6 +4,7 @@ import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Stats from './pages/Stats';
 import MyPage from './pages/MyPage';
+import Challenges from './pages/Challenges';
 import Onboarding from './pages/Onboarding';
 import Login from './pages/Login';
 
@@ -58,6 +59,7 @@ function App() {
           {/* 메인 앱 (Layout 적용) */}
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="challenges" element={<Challenges />} />
             <Route path="stats" element={<Stats />} />
             <Route path="my" element={<MyPage />} />
           </Route>

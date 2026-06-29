@@ -12,6 +12,7 @@ public class UserResponseDto {
     private String email;
     private String nickname;
     private Boolean isOnboarded;
+    private Long points;
     
     // 신체 정보
     private Double height;
@@ -25,6 +26,7 @@ public class UserResponseDto {
         dto.setEmail(user.getEmail());
         dto.setNickname(user.getNickname());
         dto.setIsOnboarded(user.getIsOnboarded());
+        dto.setPoints(user.getPoints());
         
         if (user.getUserMetrics() != null) {
             dto.setHeight(user.getUserMetrics().getHeight());
