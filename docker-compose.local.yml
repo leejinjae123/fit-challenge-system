@@ -74,8 +74,6 @@ services:
     build:
       context: ./frontend
     image: fit-challenge/frontend:local
-    ports: !override
-      - "3000:80"
 
   watchtower:
     profiles:
